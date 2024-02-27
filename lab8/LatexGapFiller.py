@@ -6,6 +6,7 @@ class Sheet(ABC):
     def __init__(self, id:int, body) -> None:
         self._id = id
         self._body = body
+        self.generated = None
 
     @property
     def get_id(self) -> int:
@@ -53,7 +54,7 @@ class TextSheet(Sheet):
         for key in key_words.keys():
             filled_body = filled_body.replace('{' + key + '}', str(key_words[key]))
             print('{' + key + '}', str(key_words[key]))
-        print(filled_body)
+        self.generated = filled_body
 
 
 
@@ -70,7 +71,7 @@ class LatexGapFiller():
         self.__key_words = dict()
         self.__sheets = []
 
-    def add_sheet(self, sheet):
+    def add_sheet(self, sheet: Sheet):
         self.__sheets.append(sheet)
 
     def add_key_word(self, name :str, value):
@@ -80,15 +81,24 @@ class LatexGapFiller():
         else:
             self.__key_words[name] =  str(value)
 
-    def generate_text(self):
-        pass
+    def generate_text(self, file_name = 'report.txt'):
+        text_file = open(file_name, "w")
+        for sheet in self.__sheets:
+            text_file.write(sheet.generated + 2*'\n')
+            
 
 if __name__ == '__main__':
-    with open('/home/homa/control-theory-labs/lab8/task1.txt', 'r') as file:
-        data = file.read().replace('\n', '')
+    with open('./lab8/task1.txt', 'r') as file:
+        data = file.read()
 
-    text = TextSheet(0, data)
-    print(data)
-    print(text.key_words)
+    gap_filler = LatexGapFiller()
 
-    text.fill_gap({"A": "1"})
+    for i in range(2):
+        text = TextSheet(0, data)
+        text.fill_gap({"A": f"{i}"})
+        gap_filler.add_sheet(text)
+
+    gap_filler.generate_text()
+       
+
+        
