@@ -13,14 +13,14 @@ import os
 class System():
 
     def __init__(self, A, B, C, D):
-        self.A = A
-        self.B = B
-        self.C = C 
-        self.D = D 
+        self.A = np.array(A)
+        self.B = np.array(B)
+        self.C = np.array(C)
+        self.D = np.array(D)
 
 class CToolbox():
 
-    def get_jordan_cells(self, A):
+    def get_jordan_cells(A):
         assert len(A.shape) == 2
         assert A.shape[0] == A.shape[1]
         
@@ -47,7 +47,7 @@ class CToolbox():
 
         return jordan_cells_poses, jordan_cells
     
-    def get_control_matrix(self, A, B):
+    def get_control_matrix(A, B):
         assert len(A.shape) == 2
         assert A.shape[0] == A.shape[1]
         assert A.shape[0] == B.shape[0]
@@ -60,7 +60,7 @@ class CToolbox():
 
         return U
     
-    def check_eigenvalues_controllable(self, A, B, method = 'rank_criteria') -> np.array:
+    def check_eigenvalues_controllable(A, B, method = 'rank_criteria') -> np.array:
         assert len(A.shape) == 2
         assert A.shape[0] == A.shape[1]
         assert A.shape[0] == B.shape[0]
@@ -75,7 +75,7 @@ class CToolbox():
                 is_controllable.append(np.linalg.matrix_rank(M) == n)
         elif method == 'jordan_form':
             P, J = Matrix(A).jordan_form()
-            jordan_cells_poses, _ = self.get_jordan_cells(J)
+            jordan_cells_poses, _ = CToolbox.get_jordan_cells(J)
             B_jordan_form = np.array(P.inv() @ B).T.flatten()
             print('jordan_form ', B_jordan_form)
             for jordan_cells_pose in jordan_cells_poses:
@@ -86,7 +86,7 @@ class CToolbox():
 
         return np.array(is_controllable)
     
-    def check_system_controllable(self, A, B, method = 'rank_criteria'):
+    def check_system_controllable(A, B, method = 'rank_criteria'):
         assert len(A.shape) == 2
         assert A.shape[0] == A.shape[1]
         assert A.shape[0] == B.shape[0]
@@ -94,34 +94,34 @@ class CToolbox():
         is_controllable = None
         n = A.shape[0]
         if method == 'rank_criteria':
-            U = self.get_control_matrix(A, B)
+            U = CToolbox.get_control_matrix(A, B)
             is_controllable = np.linalg.matrix_rank(U) == n
         elif method == 'eigen_values_criteria':
             is_controllable = True
             _, J = Matrix(A).jordan_form()
-            _, jordan_cells = self.get_jordan_cells(J)
+            _, jordan_cells = CToolbox.get_jordan_cells(J)
         
             for i in range(len(jordan_cells)):
                 for j in range(len(jordan_cells)):
                     if i != j and np.array_equal(jordan_cells[i], jordan_cells[j]):
                         is_controllable = False
             
-            is_controllable = is_controllable and np.all(self.check_eigenvalues_controllable(A, B))
+            is_controllable = is_controllable and np.all(CToolbox.check_eigenvalues_controllable(A, B))
         else:
             raise NotImplementedError
         
         return is_controllable
     
-    def check_is_state_controllable(self, A, B, x):
-        U = self.get_control_matrix(A, B)
+    def check_is_state_controllable(A, B, x):
+        U = CToolbox.get_control_matrix(A, B)
         return np.linalg.matrix_rank(U) == np.linalg.matrix_rank(np.concatenate((U, x.reshape(-1, 1)), axis=1))
     
-    def get_controllability_gramian(self, A, B, t1):
+    def get_controllability_gramian(A, B, t1):
         controllability_gramian = integrate.quad_vec(lambda x: expm(A*x) @ B @ B.T @ expm(A.T*x), 0, t1)[0] 
 
         return controllability_gramian
     
-    def get_observation_matrix(self, A, C):
+    def get_observation_matrix(A, C):
         assert len(A.shape) == 2
         assert A.shape[0] == A.shape[1]
         assert A.shape[0] == C.shape[1]
@@ -134,7 +134,7 @@ class CToolbox():
 
         return U
     
-    def check_eigenvalues_observable(self, A, C, method = 'rank_criteria') -> np.array:
+    def check_eigenvalues_observable(A, C, method = 'rank_criteria') -> np.array:
         assert len(A.shape) == 2
         assert A.shape[0] == A.shape[1]
         assert A.shape[0] == C.shape[1]
@@ -151,7 +151,7 @@ class CToolbox():
         elif method == 'jordan_form':
             is_observable = []
             P, J = Matrix(A).jordan_form()
-            jordan_cells_poses, _ = self.get_jordan_cells(J)
+            jordan_cells_poses, _ = CToolbox.get_jordan_cells(J)
             C_jordan_form = C @ P
             print("C_jordan_form: ", C_jordan_form)
             for jordan_cells_pose in jordan_cells_poses:
@@ -161,7 +161,7 @@ class CToolbox():
 
         return np.array(is_observable)
     
-    def check_system_observable(self, A, C, method = 'rank_criteria'):
+    def check_system_observable(A, C, method = 'rank_criteria'):
         assert len(A.shape) == 2
         assert A.shape[0] == A.shape[1]
         assert A.shape[0] == C.shape[1]
@@ -169,31 +169,31 @@ class CToolbox():
         is_observable = None
         n = A.shape[0]
         if method == 'rank_criteria':
-            V = self.get_observation_matrix(A, C)
+            V = CToolbox.get_observation_matrix(A, C)
             is_observable = np.linalg.matrix_rank(V) == n
         elif method == 'eigen_values_criteria':
             is_observable = True
             _, J = Matrix(A).jordan_form()
-            _, jordan_cells = self.get_jordan_cells(J)
+            _, jordan_cells = CToolbox.get_jordan_cells(J)
         
             for i in range(len(jordan_cells)):
                 for j in range(len(jordan_cells)):
                     if i != j and np.array_equal(jordan_cells[i], jordan_cells[j]):
                         is_observable = False
             
-            is_observable = is_observable and np.all(self.check_eigenvalues_observable(A, C))
+            is_observable = is_observable and np.all(CToolbox.check_eigenvalues_observable(A, C))
         else:
             raise NotImplementedError
         
         return is_observable
     
-    def get_observability_gramian(self, A, C, t1):
+    def get_observability_gramian(A, C, t1):
         observability_gramian = integrate.quad_vec(lambda x: expm(A.T*x) @ C.T @ C @ expm(A*x), 0, t1)[0] 
 
         return observability_gramian
         
-    def get_init_state(self, A, C, y, t1):
-        Q = self.get_observability_gramian(A, C, t1)
+    def get_init_state(A, C, y, t1):
+        Q = CToolbox.get_observability_gramian(A, C, t1)
         init_state = np.linalg.pinv(Q) @ integrate.quad_vec(lambda x: expm(A.T*x) @ C.T * y(x), 0, t1)[0]
 
         return init_state

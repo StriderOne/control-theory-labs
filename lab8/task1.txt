@@ -12,3 +12,9 @@ $$
 Получим $K = {K}$. 
 
 Проведем моделирование и получим следующие графики:
+
+\begin{figure}
+    \centerline{\includegraphics[width=\linewidth]{ {image_name}}}
+    \caption{Моделирование системы по заданию {id}}
+    \label{11}
+\end{figure}
