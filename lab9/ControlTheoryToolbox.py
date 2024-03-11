@@ -18,7 +18,7 @@ class System():
         self.C = np.array(C)
         self.D = np.array(D)
 
-        if not self.check_system(self):
+        if not self.check_system():
             raise Exception("Cannot create system like that")
             
 

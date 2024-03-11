@@ -1,0 +1,1281 @@
+\documentclass[11pt]{article}
+
+    \usepackage[breakable]{tcolorbox}
+    \usepackage{parskip} % Stop auto-indenting (to mimic markdown behaviour)
+    
+
+    % Basic figure setup, for now with no caption control since it's done
+    % automatically by Pandoc (which extracts ![](path) syntax from Markdown).
+    \usepackage{graphicx}
+    % Maintain compatibility with old templates. Remove in nbconvert 6.0
+    \let\Oldincludegraphics\includegraphics
+    % Ensure that by default, figures have no caption (until we provide a
+    % proper Figure object with a Caption API and a way to capture that
+    % in the conversion process - todo).
+    \usepackage{caption}
+    \DeclareCaptionFormat{nocaption}{}
+    \captionsetup{format=nocaption,aboveskip=0pt,belowskip=0pt}
+
+    \usepackage{float}
+    \floatplacement{figure}{H} % forces figures to be placed at the correct location
+    \usepackage{xcolor} % Allow colors to be defined
+    \usepackage{enumerate} % Needed for markdown enumerations to work
+    \usepackage{geometry} % Used to adjust the document margins
+    \usepackage{amsmath} % Equations
+    \usepackage{amssymb} % Equations
+    \usepackage{textcomp} % defines textquotesingle
+    % Hack from http://tex.stackexchange.com/a/47451/13684:
+    \AtBeginDocument{%
+        \def\PYZsq{\textquotesingle}% Upright quotes in Pygmentized code
+    }
+    \usepackage{upquote} % Upright quotes for verbatim code
+    \usepackage{eurosym} % defines \euro
+
+    \usepackage{iftex}
+    \ifPDFTeX
+        \usepackage[T1]{fontenc}
+        \IfFileExists{alphabeta.sty}{
+              \usepackage{alphabeta}
+          }{
+              \usepackage[mathletters]{ucs}
+              \usepackage[utf8x]{inputenc}
+          }
+    \else
+        \usepackage{fontspec}
+        \usepackage{unicode-math}
+    \fi
+
+    \usepackage{fancyvrb} % verbatim replacement that allows latex
+    \usepackage{grffile} % extends the file name processing of package graphics
+                         % to support a larger range
+    \makeatletter % fix for old versions of grffile with XeLaTeX
+    \@ifpackagelater{grffile}{2019/11/01}
+    {
+      % Do nothing on new versions
+    }
+    {
+      \def\Gread@@xetex#1{%
+        \IfFileExists{"\Gin@base".bb}%
+        {\Gread@eps{\Gin@base.bb}}%
+        {\Gread@@xetex@aux#1}%
+      }
+    }
+    \makeatother
+    \usepackage[Export]{adjustbox} % Used to constrain images to a maximum size
+    \adjustboxset{max size={0.9\linewidth}{0.9\paperheight}}
+
+    % The hyperref package gives us a pdf with properly built
+    % internal navigation ('pdf bookmarks' for the table of contents,
+    % internal cross-reference links, web links for URLs, etc.)
+    \usepackage{hyperref}
+    % The default LaTeX title has an obnoxious amount of whitespace. By default,
+    % titling removes some of it. It also provides customization options.
+    \usepackage{titling}
+    \usepackage{longtable} % longtable support required by pandoc >1.10
+    \usepackage{booktabs}  % table support for pandoc > 1.12.2
+    \usepackage{array}     % table support for pandoc >= 2.11.3
+    \usepackage{calc}      % table minipage width calculation for pandoc >= 2.11.1
+    \usepackage[inline]{enumitem} % IRkernel/repr support (it uses the enumerate* environment)
+    \usepackage[normalem]{ulem} % ulem is needed to support strikethroughs (\sout)
+                                % normalem makes italics be italics, not underlines
+    \usepackage{soul}      % strikethrough (\st) support for pandoc >= 3.0.0
+    \usepackage{mathrsfs}
+    
+
+    
+    % Colors for the hyperref package
+    \definecolor{urlcolor}{rgb}{0,.145,.698}
+    \definecolor{linkcolor}{rgb}{.71,0.21,0.01}
+    \definecolor{citecolor}{rgb}{.12,.54,.11}
+
+    % ANSI colors
+    \definecolor{ansi-black}{HTML}{3E424D}
+    \definecolor{ansi-black-intense}{HTML}{282C36}
+    \definecolor{ansi-red}{HTML}{E75C58}
+    \definecolor{ansi-red-intense}{HTML}{B22B31}
+    \definecolor{ansi-green}{HTML}{00A250}
+    \definecolor{ansi-green-intense}{HTML}{007427}
+    \definecolor{ansi-yellow}{HTML}{DDB62B}
+    \definecolor{ansi-yellow-intense}{HTML}{B27D12}
+    \definecolor{ansi-blue}{HTML}{208FFB}
+    \definecolor{ansi-blue-intense}{HTML}{0065CA}
+    \definecolor{ansi-magenta}{HTML}{D160C4}
+    \definecolor{ansi-magenta-intense}{HTML}{A03196}
+    \definecolor{ansi-cyan}{HTML}{60C6C8}
+    \definecolor{ansi-cyan-intense}{HTML}{258F8F}
+    \definecolor{ansi-white}{HTML}{C5C1B4}
+    \definecolor{ansi-white-intense}{HTML}{A1A6B2}
+    \definecolor{ansi-default-inverse-fg}{HTML}{FFFFFF}
+    \definecolor{ansi-default-inverse-bg}{HTML}{000000}
+
+    % common color for the border for error outputs.
+    \definecolor{outerrorbackground}{HTML}{FFDFDF}
+
+    % commands and environments needed by pandoc snippets
+    % extracted from the output of `pandoc -s`
+    \providecommand{\tightlist}{%
+      \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+    \DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+    % Add ',fontsize=\small' for more characters per line
+    \newenvironment{Shaded}{}{}
+    \newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.56,0.13,0.00}{{#1}}}
+    \newcommand{\DecValTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\FloatTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\CharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\StringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\CommentTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textit{{#1}}}}
+    \newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{{#1}}}
+    \newcommand{\AlertTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.02,0.16,0.49}{{#1}}}
+    \newcommand{\RegionMarkerTok}[1]{{#1}}
+    \newcommand{\ErrorTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\NormalTok}[1]{{#1}}
+
+    % Additional commands for more recent versions of Pandoc
+    \newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.53,0.00,0.00}{{#1}}}
+    \newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.73,0.40,0.53}{{#1}}}
+    \newcommand{\ImportTok}[1]{{#1}}
+    \newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.73,0.13,0.13}{\textit{{#1}}}}
+    \newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\VariableTok}[1]{\textcolor[rgb]{0.10,0.09,0.49}{{#1}}}
+    \newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.40,0.40,0.40}{{#1}}}
+    \newcommand{\BuiltInTok}[1]{{#1}}
+    \newcommand{\ExtensionTok}[1]{{#1}}
+    \newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.74,0.48,0.00}{{#1}}}
+    \newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.49,0.56,0.16}{{#1}}}
+    \newcommand{\InformationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\WarningTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+
+
+    % Define a nice break command that doesn't care if a line doesn't already
+    % exist.
+    \def\br{\hspace*{\fill} \\* }
+    % Math Jax compatibility definitions
+    \def\gt{>}
+    \def\lt{<}
+    \let\Oldtex\TeX
+    \let\Oldlatex\LaTeX
+    \renewcommand{\TeX}{\textrm{\Oldtex}}
+    \renewcommand{\LaTeX}{\textrm{\Oldlatex}}
+    % Document parameters
+    % Document title
+    \title{lab9}
+    
+    
+    
+    
+    
+    
+    
+% Pygments definitions
+\makeatletter
+\def\PY@reset{\let\PY@it=\relax \let\PY@bf=\relax%
+    \let\PY@ul=\relax \let\PY@tc=\relax%
+    \let\PY@bc=\relax \let\PY@ff=\relax}
+\def\PY@tok#1{\csname PY@tok@#1\endcsname}
+\def\PY@toks#1+{\ifx\relax#1\empty\else%
+    \PY@tok{#1}\expandafter\PY@toks\fi}
+\def\PY@do#1{\PY@bc{\PY@tc{\PY@ul{%
+    \PY@it{\PY@bf{\PY@ff{#1}}}}}}}
+\def\PY#1#2{\PY@reset\PY@toks#1+\relax+\PY@do{#2}}
+
+\@namedef{PY@tok@w}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.73,0.73}{##1}}}
+\@namedef{PY@tok@c}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cp}{\def\PY@tc##1{\textcolor[rgb]{0.61,0.40,0.00}{##1}}}
+\@namedef{PY@tok@k}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kp}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kt}{\def\PY@tc##1{\textcolor[rgb]{0.69,0.00,0.25}{##1}}}
+\@namedef{PY@tok@o}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@ow}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\@namedef{PY@tok@nb}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@nf}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@nc}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@nn}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@ne}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.80,0.25,0.22}{##1}}}
+\@namedef{PY@tok@nv}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@no}{\def\PY@tc##1{\textcolor[rgb]{0.53,0.00,0.00}{##1}}}
+\@namedef{PY@tok@nl}{\def\PY@tc##1{\textcolor[rgb]{0.46,0.46,0.00}{##1}}}
+\@namedef{PY@tok@ni}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.44,0.44,0.44}{##1}}}
+\@namedef{PY@tok@na}{\def\PY@tc##1{\textcolor[rgb]{0.41,0.47,0.13}{##1}}}
+\@namedef{PY@tok@nt}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@nd}{\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\@namedef{PY@tok@s}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sd}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@si}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.64,0.35,0.47}{##1}}}
+\@namedef{PY@tok@se}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.67,0.36,0.12}{##1}}}
+\@namedef{PY@tok@sr}{\def\PY@tc##1{\textcolor[rgb]{0.64,0.35,0.47}{##1}}}
+\@namedef{PY@tok@ss}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@sx}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@m}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@gh}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\@namedef{PY@tok@gu}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.50,0.00,0.50}{##1}}}
+\@namedef{PY@tok@gd}{\def\PY@tc##1{\textcolor[rgb]{0.63,0.00,0.00}{##1}}}
+\@namedef{PY@tok@gi}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.52,0.00}{##1}}}
+\@namedef{PY@tok@gr}{\def\PY@tc##1{\textcolor[rgb]{0.89,0.00,0.00}{##1}}}
+\@namedef{PY@tok@ge}{\let\PY@it=\textit}
+\@namedef{PY@tok@gs}{\let\PY@bf=\textbf}
+\@namedef{PY@tok@ges}{\let\PY@bf=\textbf\let\PY@it=\textit}
+\@namedef{PY@tok@gp}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\@namedef{PY@tok@go}{\def\PY@tc##1{\textcolor[rgb]{0.44,0.44,0.44}{##1}}}
+\@namedef{PY@tok@gt}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.27,0.87}{##1}}}
+\@namedef{PY@tok@err}{\def\PY@bc##1{{\setlength{\fboxsep}{\string -\fboxrule}\fcolorbox[rgb]{1.00,0.00,0.00}{1,1,1}{\strut ##1}}}}
+\@namedef{PY@tok@kc}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kd}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kn}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kr}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@bp}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@fm}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@vc}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vg}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vi}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vm}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@sa}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sb}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sc}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@dl}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@s2}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sh}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@s1}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@mb}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mf}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mh}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mi}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@il}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mo}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@ch}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cm}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cpf}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@c1}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cs}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+
+\def\PYZbs{\char`\\}
+\def\PYZus{\char`\_}
+\def\PYZob{\char`\{}
+\def\PYZcb{\char`\}}
+\def\PYZca{\char`\^}
+\def\PYZam{\char`\&}
+\def\PYZlt{\char`\<}
+\def\PYZgt{\char`\>}
+\def\PYZsh{\char`\#}
+\def\PYZpc{\char`\%}
+\def\PYZdl{\char`\$}
+\def\PYZhy{\char`\-}
+\def\PYZsq{\char`\'}
+\def\PYZdq{\char`\"}
+\def\PYZti{\char`\~}
+% for compatibility with earlier versions
+\def\PYZat{@}
+\def\PYZlb{[}
+\def\PYZrb{]}
+\makeatother
+
+
+    % For linebreaks inside Verbatim environment from package fancyvrb.
+    \makeatletter
+        \newbox\Wrappedcontinuationbox
+        \newbox\Wrappedvisiblespacebox
+        \newcommand*\Wrappedvisiblespace {\textcolor{red}{\textvisiblespace}}
+        \newcommand*\Wrappedcontinuationsymbol {\textcolor{red}{\llap{\tiny$\m@th\hookrightarrow$}}}
+        \newcommand*\Wrappedcontinuationindent {3ex }
+        \newcommand*\Wrappedafterbreak {\kern\Wrappedcontinuationindent\copy\Wrappedcontinuationbox}
+        % Take advantage of the already applied Pygments mark-up to insert
+        % potential linebreaks for TeX processing.
+        %        {, <, #, %, $, ' and ": go to next line.
+        %        _, }, ^, &, >, - and ~: stay at end of broken line.
+        % Use of \textquotesingle for straight quote.
+        \newcommand*\Wrappedbreaksatspecials {%
+            \def\PYGZus{\discretionary{\char`\_}{\Wrappedafterbreak}{\char`\_}}%
+            \def\PYGZob{\discretionary{}{\Wrappedafterbreak\char`\{}{\char`\{}}%
+            \def\PYGZcb{\discretionary{\char`\}}{\Wrappedafterbreak}{\char`\}}}%
+            \def\PYGZca{\discretionary{\char`\^}{\Wrappedafterbreak}{\char`\^}}%
+            \def\PYGZam{\discretionary{\char`\&}{\Wrappedafterbreak}{\char`\&}}%
+            \def\PYGZlt{\discretionary{}{\Wrappedafterbreak\char`\<}{\char`\<}}%
+            \def\PYGZgt{\discretionary{\char`\>}{\Wrappedafterbreak}{\char`\>}}%
+            \def\PYGZsh{\discretionary{}{\Wrappedafterbreak\char`\#}{\char`\#}}%
+            \def\PYGZpc{\discretionary{}{\Wrappedafterbreak\char`\%}{\char`\%}}%
+            \def\PYGZdl{\discretionary{}{\Wrappedafterbreak\char`\$}{\char`\$}}%
+            \def\PYGZhy{\discretionary{\char`\-}{\Wrappedafterbreak}{\char`\-}}%
+            \def\PYGZsq{\discretionary{}{\Wrappedafterbreak\textquotesingle}{\textquotesingle}}%
+            \def\PYGZdq{\discretionary{}{\Wrappedafterbreak\char`\"}{\char`\"}}%
+            \def\PYGZti{\discretionary{\char`\~}{\Wrappedafterbreak}{\char`\~}}%
+        }
+        % Some characters . , ; ? ! / are not pygmentized.
+        % This macro makes them "active" and they will insert potential linebreaks
+        \newcommand*\Wrappedbreaksatpunct {%
+            \lccode`\~`\.\lowercase{\def~}{\discretionary{\hbox{\char`\.}}{\Wrappedafterbreak}{\hbox{\char`\.}}}%
+            \lccode`\~`\,\lowercase{\def~}{\discretionary{\hbox{\char`\,}}{\Wrappedafterbreak}{\hbox{\char`\,}}}%
+            \lccode`\~`\;\lowercase{\def~}{\discretionary{\hbox{\char`\;}}{\Wrappedafterbreak}{\hbox{\char`\;}}}%
+            \lccode`\~`\:\lowercase{\def~}{\discretionary{\hbox{\char`\:}}{\Wrappedafterbreak}{\hbox{\char`\:}}}%
+            \lccode`\~`\?\lowercase{\def~}{\discretionary{\hbox{\char`\?}}{\Wrappedafterbreak}{\hbox{\char`\?}}}%
+            \lccode`\~`\!\lowercase{\def~}{\discretionary{\hbox{\char`\!}}{\Wrappedafterbreak}{\hbox{\char`\!}}}%
+            \lccode`\~`\/\lowercase{\def~}{\discretionary{\hbox{\char`\/}}{\Wrappedafterbreak}{\hbox{\char`\/}}}%
+            \catcode`\.\active
+            \catcode`\,\active
+            \catcode`\;\active
+            \catcode`\:\active
+            \catcode`\?\active
+            \catcode`\!\active
+            \catcode`\/\active
+            \lccode`\~`\~
+        }
+    \makeatother
+
+    \let\OriginalVerbatim=\Verbatim
+    \makeatletter
+    \renewcommand{\Verbatim}[1][1]{%
+        %\parskip\z@skip
+        \sbox\Wrappedcontinuationbox {\Wrappedcontinuationsymbol}%
+        \sbox\Wrappedvisiblespacebox {\FV@SetupFont\Wrappedvisiblespace}%
+        \def\FancyVerbFormatLine ##1{\hsize\linewidth
+            \vtop{\raggedright\hyphenpenalty\z@\exhyphenpenalty\z@
+                \doublehyphendemerits\z@\finalhyphendemerits\z@
+                \strut ##1\strut}%
+        }%
+        % If the linebreak is at a space, the latter will be displayed as visible
+        % space at end of first line, and a continuation symbol starts next line.
+        % Stretch/shrink are however usually zero for typewriter font.
+        \def\FV@Space {%
+            \nobreak\hskip\z@ plus\fontdimen3\font minus\fontdimen4\font
+            \discretionary{\copy\Wrappedvisiblespacebox}{\Wrappedafterbreak}
+            {\kern\fontdimen2\font}%
+        }%
+
+        % Allow breaks at special characters using \PYG... macros.
+        \Wrappedbreaksatspecials
+        % Breaks at punctuation characters . , ; ? ! and / need catcode=\active
+        \OriginalVerbatim[#1,codes*=\Wrappedbreaksatpunct]%
+    }
+    \makeatother
+
+    % Exact colors from NB
+    \definecolor{incolor}{HTML}{303F9F}
+    \definecolor{outcolor}{HTML}{D84315}
+    \definecolor{cellborder}{HTML}{CFCFCF}
+    \definecolor{cellbackground}{HTML}{F7F7F7}
+
+    % prompt
+    \makeatletter
+    \newcommand{\boxspacing}{\kern\kvtcb@left@rule\kern\kvtcb@boxsep}
+    \makeatother
+    \newcommand{\prompt}[4]{
+        {\ttfamily\llap{{\color{#2}[#3]:\hspace{3pt}#4}}\vspace{-\baselineskip}}
+    }
+    
+
+    
+    % Prevent overflowing lines due to hard-to-break entities
+    \sloppy
+    % Setup hyperref package
+    \hypersetup{
+      breaklinks=true,  % so long urls are correctly broken across lines
+      colorlinks=true,
+      urlcolor=urlcolor,
+      linkcolor=linkcolor,
+      citecolor=citecolor,
+      }
+    % Slightly bigger margins than the latex defaults
+    
+    \geometry{verbose,tmargin=1in,bmargin=1in,lmargin=1in,rmargin=1in}
+    
+    
+
+\begin{document}
+    
+    \maketitle
+    
+    
+
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{3}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{import} \PY{n+nn}{matplotlib}\PY{n+nn}{.}\PY{n+nn}{pyplot} \PY{k}{as} \PY{n+nn}{plt}
+\PY{k+kn}{import} \PY{n+nn}{scipy}
+\PY{k+kn}{import} \PY{n+nn}{sympy}
+\PY{k+kn}{import} \PY{n+nn}{numpy} \PY{k}{as} \PY{n+nn}{np}
+\PY{k+kn}{import} \PY{n+nn}{control} 
+\PY{k+kn}{import} \PY{n+nn}{os}
+\PY{k+kn}{import} \PY{n+nn}{array\PYZus{}to\PYZus{}latex} \PY{k}{as} \PY{n+nn}{a2l}
+\PY{k+kn}{from} \PY{n+nn}{ControlTheoryToolbox} \PY{k+kn}{import} \PY{n}{System}\PY{p}{,} \PY{n}{CToolbox}
+\PY{k+kn}{import} \PY{n+nn}{cvxpy}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{4}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{def} \PY{n+nf}{get\PYZus{}K}\PY{p}{(}\PY{n}{system} \PY{p}{:} \PY{n}{System}\PY{p}{,} \PY{n}{alpha}\PY{p}{:} \PY{n+nb}{float}\PY{p}{,} \PY{n}{mu} \PY{p}{:}\PY{n+nb}{float} \PY{o}{=} \PY{k+kc}{None}\PY{p}{,} \PY{n}{x0}\PY{p}{:}\PY{n}{np}\PY{o}{.}\PY{n}{array} \PY{o}{=} \PY{k+kc}{None}\PY{p}{,} \PY{n}{precision} \PY{p}{:} \PY{n+nb}{float} \PY{o}{=} \PY{l+m+mf}{0.01}\PY{p}{)} \PY{o}{\PYZhy{}}\PY{o}{\PYZgt{}} \PY{n+nb}{tuple}\PY{p}{:}
+    
+    \PY{n}{P} \PY{o}{=} \PY{n}{cvxpy}\PY{o}{.}\PY{n}{Variable}\PY{p}{(}\PY{n}{system}\PY{o}{.}\PY{n}{A}\PY{o}{.}\PY{n}{shape}\PY{p}{)}
+    \PY{n}{Y} \PY{o}{=} \PY{n}{cvxpy}\PY{o}{.}\PY{n}{Variable}\PY{p}{(}\PY{p}{(}\PY{n}{system}\PY{o}{.}\PY{n}{B}\PY{o}{.}\PY{n}{T}\PY{p}{)}\PY{o}{.}\PY{n}{shape}\PY{p}{)}
+    \PY{n}{gamma} \PY{o}{=} \PY{n}{cvxpy}\PY{o}{.}\PY{n}{Variable}\PY{p}{(}\PY{p}{)}
+
+    \PY{n}{constraints} \PY{o}{=} \PY{p}{[}\PY{n}{P} \PY{o}{\PYZhy{}} \PY{n}{precision}\PY{o}{*}\PY{n}{np}\PY{o}{.}\PY{n}{eye}\PY{p}{(}\PY{n}{system}\PY{o}{.}\PY{n}{A}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{)} \PY{o}{\PYZgt{}\PYZgt{}} \PY{l+m+mi}{0}\PY{p}{,} \PY{p}{(}\PY{n}{P} \PY{o}{@} \PY{p}{(}\PY{n}{system}\PY{o}{.}\PY{n}{A}\PY{o}{.}\PY{n}{T}\PY{p}{)} \PY{o}{+} \PY{n}{system}\PY{o}{.}\PY{n}{A} \PY{o}{@} \PY{n}{P} \PY{o}{+} \PY{l+m+mi}{2} \PY{o}{*} \PY{n}{alpha} \PY{o}{*} \PY{n}{P} \PY{o}{+} \PY{p}{(}\PY{n}{Y}\PY{o}{.}\PY{n}{T}\PY{p}{)} \PY{o}{@} \PY{p}{(}\PY{n}{system}\PY{o}{.}\PY{n}{B}\PY{o}{.}\PY{n}{T}\PY{p}{)} \PY{o}{+} \PY{n}{system}\PY{o}{.}\PY{n}{B} \PY{o}{@} \PY{n}{Y}\PY{p}{)} \PY{o}{+} \PY{n}{precision}\PY{o}{*}\PY{n}{np}\PY{o}{.}\PY{n}{eye}\PY{p}{(}\PY{n}{system}\PY{o}{.}\PY{n}{A}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{)} \PY{o}{\PYZlt{}\PYZlt{}} \PY{l+m+mi}{0}\PY{p}{]}
+    \PY{n}{expr} \PY{o}{=} \PY{n}{cvxpy}\PY{o}{.}\PY{n}{sum\PYZus{}squares}\PY{p}{(}\PY{n}{P}\PY{o}{*}\PY{l+m+mi}{0}\PY{p}{)}
+    \PY{k}{if} \PY{n}{mu} \PY{o}{!=} \PY{k+kc}{None} \PY{o+ow}{and} \PY{o+ow}{not} \PY{n}{x0} \PY{o+ow}{is} \PY{k+kc}{None}\PY{p}{:}
+        \PY{c+c1}{\PYZsh{} constraint on output}
+        \PY{n+nb}{print}\PY{p}{(}\PY{n}{P}\PY{o}{.}\PY{n}{shape}\PY{p}{,} \PY{n}{Y}\PY{o}{.}\PY{n}{shape}\PY{p}{,} \PY{n}{np}\PY{o}{.}\PY{n}{ones}\PY{p}{(}\PY{n}{Y}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{,} \PY{n}{Y}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{)}\PY{p}{)}
+        \PY{n}{constraints}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n}{cvxpy}\PY{o}{.}\PY{n}{bmat}\PY{p}{(}\PY{p}{[}\PY{p}{[}\PY{n}{P}\PY{p}{,} \PY{n}{x0}\PY{p}{]}\PY{p}{,} \PY{p}{[}\PY{n}{x0}\PY{o}{.}\PY{n}{T}\PY{p}{,} \PY{n}{np}\PY{o}{.}\PY{n}{ones}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{)}\PY{o}{.}\PY{n}{reshape}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{)}\PY{p}{]}\PY{p}{]}\PY{p}{)} \PY{o}{\PYZhy{}} \PY{n}{precision}\PY{o}{*}\PY{n}{np}\PY{o}{.}\PY{n}{eye}\PY{p}{(}\PY{n}{system}\PY{o}{.}\PY{n}{A}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]} \PY{o}{+} \PY{l+m+mi}{1}\PY{p}{)} \PY{o}{\PYZgt{}\PYZgt{}} \PY{l+m+mi}{0}\PY{p}{)}
+        \PY{n}{constraints}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n}{cvxpy}\PY{o}{.}\PY{n}{bmat}\PY{p}{(}\PY{p}{[}\PY{p}{[}\PY{n}{P}\PY{p}{,} \PY{n}{Y}\PY{o}{.}\PY{n}{T}\PY{p}{]}\PY{p}{,} \PY{p}{[}\PY{n}{Y}\PY{p}{,} \PY{n}{mu}\PY{o}{*}\PY{n}{mu}\PY{o}{*}\PY{n}{np}\PY{o}{.}\PY{n}{ones}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{)}\PY{o}{.}\PY{n}{reshape}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{)}\PY{p}{]}\PY{p}{]}\PY{p}{)} \PY{o}{\PYZhy{}} \PY{n}{precision}\PY{o}{*}\PY{n}{np}\PY{o}{.}\PY{n}{eye}\PY{p}{(}\PY{n}{system}\PY{o}{.}\PY{n}{A}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]} \PY{o}{+} \PY{n}{Y}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{)} \PY{o}{\PYZgt{}\PYZgt{}} \PY{l+m+mi}{0}\PY{p}{)}
+    \PY{k}{elif} \PY{n}{mu} \PY{o}{==} \PY{k+kc}{None} \PY{o+ow}{and} \PY{o+ow}{not} \PY{n}{x0} \PY{o+ow}{is} \PY{k+kc}{None}\PY{p}{:}
+        
+        \PY{n}{constraints}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n}{cvxpy}\PY{o}{.}\PY{n}{bmat}\PY{p}{(}\PY{p}{[}\PY{p}{[}\PY{n}{P}\PY{p}{,} \PY{n}{x0}\PY{p}{]}\PY{p}{,} \PY{p}{[}\PY{n}{x0}\PY{o}{.}\PY{n}{T}\PY{p}{,} \PY{n}{np}\PY{o}{.}\PY{n}{ones}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{)}\PY{o}{.}\PY{n}{reshape}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{)}\PY{p}{]}\PY{p}{]}\PY{p}{)} \PY{o}{\PYZhy{}} \PY{n}{precision}\PY{o}{*}\PY{n}{np}\PY{o}{.}\PY{n}{eye}\PY{p}{(}\PY{n}{system}\PY{o}{.}\PY{n}{A}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]} \PY{o}{+} \PY{l+m+mi}{1}\PY{p}{)} \PY{o}{\PYZgt{}\PYZgt{}} \PY{l+m+mi}{0}\PY{p}{)}
+        \PY{n}{constraints}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{n}{cvxpy}\PY{o}{.}\PY{n}{bmat}\PY{p}{(}\PY{p}{[}\PY{p}{[}\PY{n}{P}\PY{p}{,} \PY{n}{Y}\PY{o}{.}\PY{n}{T}\PY{p}{]}\PY{p}{,} \PY{p}{[}\PY{n}{Y}\PY{p}{,} \PY{n}{gamma}\PY{o}{*}\PY{n}{np}\PY{o}{.}\PY{n}{ones}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{)}\PY{o}{.}\PY{n}{reshape}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{)}\PY{p}{]}\PY{p}{]}\PY{p}{)} \PY{o}{\PYZhy{}} \PY{n}{precision}\PY{o}{*}\PY{n}{np}\PY{o}{.}\PY{n}{eye}\PY{p}{(}\PY{n}{system}\PY{o}{.}\PY{n}{A}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]} \PY{o}{+} \PY{n}{Y}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{)} \PY{o}{\PYZgt{}\PYZgt{}} \PY{l+m+mi}{0}\PY{p}{)}
+        \PY{n}{expr} \PY{o}{=} \PY{n}{gamma}
+    \PY{n}{problem} \PY{o}{=} \PY{n}{cvxpy}\PY{o}{.}\PY{n}{Problem}\PY{p}{(}\PY{n}{cvxpy}\PY{o}{.}\PY{n}{Minimize}\PY{p}{(}\PY{n}{expr}\PY{p}{)}\PY{p}{,} \PY{n}{constraints}\PY{p}{)}
+    \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Time: }\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{problem}\PY{o}{.}\PY{n}{solve}\PY{p}{(}\PY{p}{)}\PY{p}{)}
+    \PY{n}{P} \PY{o}{=} \PY{n}{P}\PY{o}{.}\PY{n}{value}
+    \PY{n}{Y} \PY{o}{=} \PY{n}{Y}\PY{o}{.}\PY{n}{value}
+    \PY{c+c1}{\PYZsh{} g = gamma.value}
+    \PY{c+c1}{\PYZsh{} print(P, Y)}
+    \PY{n}{K} \PY{o}{=} \PY{n}{Y}\PY{n+nd}{@np}\PY{o}{.}\PY{n}{linalg}\PY{o}{.}\PY{n}{pinv}\PY{p}{(}\PY{n}{P}\PY{p}{)}
+    \PY{k}{if} \PY{n}{mu} \PY{o}{==} \PY{k+kc}{None} \PY{o+ow}{and} \PY{o+ow}{not} \PY{n}{x0} \PY{o+ow}{is} \PY{k+kc}{None}\PY{p}{:}
+        \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{mu: }\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{np}\PY{o}{.}\PY{n}{sqrt}\PY{p}{(}\PY{n}{gamma}\PY{o}{.}\PY{n}{value}\PY{p}{)}\PY{p}{)}
+    \PY{k}{assert} \PY{n}{np}\PY{o}{.}\PY{n}{all}\PY{p}{(}\PY{n}{num}\PY{o}{.}\PY{n}{real} \PY{o}{\PYZlt{}} \PY{o}{\PYZhy{}}\PY{n}{alpha} \PY{k}{for} \PY{n}{num} \PY{o+ow}{in} \PY{n}{np}\PY{o}{.}\PY{n}{linalg}\PY{o}{.}\PY{n}{eig}\PY{p}{(}\PY{n}{system}\PY{o}{.}\PY{n}{A}\PY{o}{+}\PY{n}{system}\PY{o}{.}\PY{n}{B}\PY{n+nd}{@K}\PY{p}{)}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{)}
+
+    \PY{k}{return} \PY{n}{K}\PY{p}{,} \PY{n}{P}\PY{p}{,} \PY{n}{Y}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{5}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{def} \PY{n+nf}{task\PYZus{}1}\PY{p}{(}\PY{n}{system}\PY{p}{,} \PY{n}{desired\PYZus{}alpha}\PY{p}{,} \PY{n}{time\PYZus{}end} \PY{o}{=} \PY{l+m+mf}{3.0}\PY{p}{,} \PY{o}{*}\PY{o}{*}\PY{n}{kwargs}\PY{p}{)}\PY{p}{:}
+    \PY{n}{time} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{linspace}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,} \PY{n}{time\PYZus{}end}\PY{p}{,} \PY{l+m+mi}{1000}\PY{p}{)}
+    \PY{n}{fig}\PY{p}{,} \PY{n}{axs} \PY{o}{=} \PY{n}{plt}\PY{o}{.}\PY{n}{subplots}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{,} \PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{8}\PY{p}{,} \PY{l+m+mi}{8}\PY{p}{)}\PY{p}{)}
+    \PY{n}{plt}\PY{o}{.}\PY{n}{subplots\PYZus{}adjust}\PY{p}{(}\PY{n}{left}\PY{o}{=}\PY{l+m+mf}{0.1}\PY{p}{,} \PY{n}{bottom}\PY{o}{=}\PY{l+m+mf}{0.1}\PY{p}{,} \PY{n}{right}\PY{o}{=}\PY{l+m+mf}{0.9}\PY{p}{,} \PY{n}{top}\PY{o}{=}\PY{l+m+mf}{0.9}\PY{p}{,} \PY{n}{wspace}\PY{o}{=}\PY{l+m+mf}{0.4}\PY{p}{,}\PY{n}{hspace}\PY{o}{=}\PY{l+m+mf}{0.4}\PY{p}{)}
+    \PY{n}{colors} \PY{o}{=} \PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{blue}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{r}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{green}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+    \PY{n}{linestyle} \PY{o}{=} \PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZhy{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZhy{}\PYZhy{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZhy{}.}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+    
+    \PY{k}{for} \PY{n}{j}\PY{p}{,} \PY{n}{alpha} \PY{o+ow}{in} \PY{n+nb}{enumerate}\PY{p}{(}\PY{n}{desired\PYZus{}alpha}\PY{p}{)}\PY{p}{:}
+        \PY{n}{K}\PY{p}{,} \PY{n}{P}\PY{p}{,} \PY{n}{Y} \PY{o}{=} \PY{n}{get\PYZus{}K}\PY{p}{(}\PY{n}{system}\PY{p}{,} \PY{n}{alpha}\PY{p}{,} \PY{o}{*}\PY{o}{*}\PY{n}{kwargs}\PY{p}{)}
+        \PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{==============}\PY{l+s+si}{\PYZob{}}\PY{n}{alpha}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{==============}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+        \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{K: }\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+        \PY{n+nb}{print}\PY{p}{(}\PY{n}{K}\PY{p}{)}
+        \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{K latex: }\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+        \PY{n+nb}{print}\PY{p}{(}\PY{n}{a2l}\PY{o}{.}\PY{n}{to\PYZus{}ltx}\PY{p}{(}\PY{n}{K}\PY{p}{,} \PY{n}{frmt} \PY{o}{=} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+si}{\PYZob{}:2.2f\PYZcb{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{arraytype} \PY{o}{=} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{bmatrix}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{print\PYZus{}out}\PY{o}{=}\PY{k+kc}{False}\PY{p}{)}\PY{p}{)}
+        \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{=============================}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+        \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{A + BK eigvalues: }\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+        \PY{n+nb}{print}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{linalg}\PY{o}{.}\PY{n}{eig}\PY{p}{(}\PY{n}{system}\PY{o}{.}\PY{n}{A}\PY{o}{+}\PY{n}{system}\PY{o}{.}\PY{n}{B}\PY{n+nd}{@K}\PY{p}{)}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{)}
+        \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{A + BK eigvalues latex: }\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+        \PY{n+nb}{print}\PY{p}{(}\PY{n}{a2l}\PY{o}{.}\PY{n}{to\PYZus{}ltx}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{linalg}\PY{o}{.}\PY{n}{eig}\PY{p}{(}\PY{n}{system}\PY{o}{.}\PY{n}{A}\PY{o}{+}\PY{n}{system}\PY{o}{.}\PY{n}{B}\PY{n+nd}{@K}\PY{p}{)}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{,} \PY{n}{frmt} \PY{o}{=} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+si}{\PYZob{}:2.2f\PYZcb{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{arraytype} \PY{o}{=} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{bmatrix}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{print\PYZus{}out}\PY{o}{=}\PY{k+kc}{False}\PY{p}{)}\PY{p}{)}
+        
+        \PY{n}{ss} \PY{o}{=} \PY{n}{control}\PY{o}{.}\PY{n}{ss}\PY{p}{(}\PY{p}{(}\PY{n}{system}\PY{o}{.}\PY{n}{A} \PY{o}{+} \PY{n}{system}\PY{o}{.}\PY{n}{B} \PY{o}{@} \PY{n}{K}\PY{p}{)}\PY{p}{,} \PY{n}{system}\PY{o}{.}\PY{n}{B}\PY{o}{*}\PY{l+m+mi}{0}\PY{p}{,} \PY{n}{system}\PY{o}{.}\PY{n}{A} \PY{o}{*} \PY{l+m+mi}{0}\PY{p}{,} \PY{n}{system}\PY{o}{.}\PY{n}{B} \PY{o}{*} \PY{l+m+mi}{0}\PY{p}{)}
+        \PY{n}{output} \PY{o}{=} \PY{n}{control}\PY{o}{.}\PY{n}{forced\PYZus{}response}\PY{p}{(}\PY{n}{ss}\PY{p}{,} \PY{n}{X0}\PY{o}{=}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{]}\PY{p}{,} \PY{n}{T}\PY{o}{=}\PY{n}{time}\PY{p}{)}\PY{o}{.}\PY{n}{states}
+        \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n}{system}\PY{o}{.}\PY{n}{A}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{)}\PY{p}{:}
+            \PY{n}{idx} \PY{o}{=} \PY{p}{(}\PY{n}{i} \PY{o}{/}\PY{o}{/} \PY{l+m+mi}{2}\PY{p}{,} \PY{n}{i} \PY{o}{\PYZpc{}} \PY{l+m+mi}{2}\PY{p}{)}
+            \PY{k}{if} \PY{n}{i} \PY{o}{==} \PY{l+m+mi}{0}\PY{p}{:}
+                \PY{n}{linestyle} \PY{o}{=} \PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZhy{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZhy{}\PYZhy{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZhy{}.}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+            \PY{k}{else}\PY{p}{:}
+                \PY{n}{linestyle} \PY{o}{=} \PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZhy{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZhy{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZhy{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+            \PY{n}{axs}\PY{p}{[}\PY{n}{idx}\PY{p}{]}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{time}\PY{p}{,} \PY{n}{output}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{p}{,} \PY{n}{linewidth}\PY{o}{=}\PY{l+m+mi}{2}\PY{p}{,} \PY{n}{label}\PY{o}{=}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{alpha = }\PY{l+s+si}{\PYZob{}}\PY{n}{alpha}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{color}\PY{o}{=}\PY{n}{colors}\PY{p}{[}\PY{o}{\PYZhy{}}\PY{n}{j}\PY{p}{]}\PY{p}{,} \PY{n}{linestyle}\PY{o}{=}\PY{n}{linestyle}\PY{p}{[}\PY{n}{j}\PY{p}{]}\PY{p}{)}
+            \PY{n}{axs}\PY{p}{[}\PY{n}{idx}\PY{p}{]}\PY{o}{.}\PY{n}{set\PYZus{}title}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{x\PYZus{}}\PY{l+s+si}{\PYZob{}}\PY{n}{i}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s1}{(t)}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{fontsize}\PY{o}{=}\PY{l+m+mi}{12}\PY{p}{)}
+            \PY{n}{axs}\PY{p}{[}\PY{n}{idx}\PY{p}{]}\PY{o}{.}\PY{n}{set\PYZus{}xlabel}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{t, [c]}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{fontsize}\PY{o}{=}\PY{l+m+mi}{12}\PY{p}{)}
+            \PY{n}{axs}\PY{p}{[}\PY{n}{idx}\PY{p}{]}\PY{o}{.}\PY{n}{grid}\PY{p}{(}\PY{k+kc}{True}\PY{p}{)}
+            \PY{n}{axs}\PY{p}{[}\PY{n}{idx}\PY{p}{]}\PY{o}{.}\PY{n}{legend}\PY{p}{(}\PY{p}{)}
+
+        \PY{c+c1}{\PYZsh{} linestyle = [\PYZsq{}\PYZhy{}\PYZsq{}, \PYZsq{}\PYZhy{}\PYZhy{}\PYZsq{}, \PYZsq{}\PYZhy{}.\PYZsq{}]}
+        \PY{c+c1}{\PYZsh{} axs\PYZus{}u.plot(time, (K @ output).reshape(\PYZhy{}1), linewidth=2, label=f\PYZdq{}alpha = \PYZob{}alpha\PYZcb{}\PYZdq{}, color=colors[\PYZhy{}j], linestyle=linestyle[j])}
+        \PY{c+c1}{\PYZsh{} axs\PYZus{}u.set\PYZus{}title(f\PYZsq{}u(t)\PYZsq{}, fontsize=12)}
+        \PY{c+c1}{\PYZsh{} axs\PYZus{}u.set\PYZus{}xlabel(f\PYZdq{}t, [c]\PYZdq{}, fontsize=12)}
+        \PY{c+c1}{\PYZsh{} axs\PYZus{}u.grid(True)}
+        \PY{c+c1}{\PYZsh{} axs\PYZus{}u.legend()}
+            
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{6}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{A} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{p}{[}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mi}{5}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mi}{0}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mi}{0}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{6}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mi}{0}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mi}{6}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{]}\PY{p}{,}
+\PY{p}{]}\PY{p}{)}
+\PY{n}{B} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{p}{[}
+    \PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mi}{3}\PY{p}{]}
+\PY{p}{]}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{a2l}\PY{o}{.}\PY{n}{to\PYZus{}ltx}\PY{p}{(}\PY{n}{A}\PY{p}{,} \PY{n}{frmt} \PY{o}{=} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+si}{\PYZob{}:2\PYZcb{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{arraytype} \PY{o}{=} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{bmatrix}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{print\PYZus{}out}\PY{o}{=}\PY{k+kc}{False}\PY{p}{)}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{a2l}\PY{o}{.}\PY{n}{to\PYZus{}ltx}\PY{p}{(}\PY{n}{B}\PY{p}{,} \PY{n}{frmt} \PY{o}{=} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+si}{\PYZob{}:2\PYZcb{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{arraytype} \PY{o}{=} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{bmatrix}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{print\PYZus{}out}\PY{o}{=}\PY{k+kc}{False}\PY{p}{)}\PY{p}{)}
+\PY{n}{system} \PY{o}{=} \PY{n}{System}\PY{p}{(}\PY{n}{A}\PY{p}{,} \PY{n}{B}\PY{p}{,} \PY{n}{A}\PY{o}{*}\PY{l+m+mi}{0}\PY{p}{,} \PY{n}{B}\PY{o}{*}\PY{l+m+mi}{0}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+\textbackslash{}begin\{bmatrix\}
+ -5  \&   0  \&   0  \&   0 \textbackslash{}\textbackslash{}
+   0  \&   0  \&   0  \&   0 \textbackslash{}\textbackslash{}
+   0  \&   0  \&   2  \&   6 \textbackslash{}\textbackslash{}
+   0  \&   0  \& -6  \&   2
+\textbackslash{}end\{bmatrix\}
+\textbackslash{}begin\{bmatrix\}
+   0 \textbackslash{}\textbackslash{}
+   1 \textbackslash{}\textbackslash{}
+   0 \textbackslash{}\textbackslash{}
+   3
+\textbackslash{}end\{bmatrix\}
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{7}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{desired\PYZus{}alpha} \PY{o}{=} \PY{p}{[}\PY{l+m+mf}{1.0}\PY{p}{,} \PY{l+m+mf}{3.0}\PY{p}{,} \PY{l+m+mf}{10.0}\PY{p}{]}
+\PY{n}{task\PYZus{}1}\PY{p}{(}\PY{n}{system}\PY{p}{,} \PY{n}{desired\PYZus{}alpha}\PY{p}{,} \PY{n}{time\PYZus{}end}\PY{o}{=}\PY{l+m+mf}{1.0}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Time:  0.0
+==============1.0==============
+K:
+[[ 0.         -1.98963054 -2.19842256 -2.02969124]]
+K latex:
+\textbackslash{}begin\{bmatrix\}
+  0.00 \& -1.99 \& -2.20 \& -2.03
+\textbackslash{}end\{bmatrix\}
+=============================
+A + BK eigvalues:
+[-1.3242631 +7.34121242j -1.3242631 -7.34121242j -1.43017805+0.j
+ -5.        +0.j        ]
+A + BK eigvalues latex:
+\textbackslash{}begin\{bmatrix\}
+ -1.32 + 7.34j \& -1.32 + -7.34j \& -1.43 + 0.00j \& -5.00 + 0.00j
+\textbackslash{}end\{bmatrix\}
+Time:  0.0
+==============3.0==============
+K:
+[[ 0.         -8.39990903 -7.04053475 -1.85593533]]
+K latex:
+\textbackslash{}begin\{bmatrix\}
+  0.00 \& -8.40 \& -7.04 \& -1.86
+\textbackslash{}end\{bmatrix\}
+=============================
+A + BK eigvalues:
+[-3.29995504+9.42748451j -3.29995504-9.42748451j -3.36780496+0.j
+ -5.        +0.j        ]
+A + BK eigvalues latex:
+\textbackslash{}begin\{bmatrix\}
+ -3.30 + 9.43j \& -3.30 + -9.43j \& -3.37 + 0.00j \& -5.00 + 0.00j
+\textbackslash{}end\{bmatrix\}
+Time:  0.0
+==============10.0==============
+K:
+[[   0.         -234.15890482  -88.66027717   64.87851388]]
+K latex:
+\textbackslash{}begin\{bmatrix\}
+  0.00 \& -234.16 \& -88.66 \&  64.88
+\textbackslash{}end\{bmatrix\}
+=============================
+A + BK eigvalues:
+[-11.99262971+25.84478426j -11.99262971-25.84478426j
+ -11.53810376 +0.j          -5.         +0.j        ]
+A + BK eigvalues latex:
+\textbackslash{}begin\{bmatrix\}
+ -11.99 + 25.84j \& -11.99 + -25.84j \& -11.54 + 0.00j \& -5.00 + 0.00j
+\textbackslash{}end\{bmatrix\}
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{lab9_files/lab9_4_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{8}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{def} \PY{n+nf}{task\PYZus{}2}\PY{p}{(}\PY{n}{system}\PY{p}{,} \PY{n}{desired\PYZus{}mu}\PY{p}{,} \PY{n}{x0}\PY{p}{,} \PY{n}{time\PYZus{}end}\PY{p}{,} \PY{o}{*}\PY{o}{*}\PY{n}{kwargs}\PY{p}{)}\PY{p}{:}
+    \PY{n}{time} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{linspace}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,} \PY{n}{time\PYZus{}end}\PY{p}{,} \PY{l+m+mi}{1000}\PY{p}{)}
+    \PY{n}{fig}\PY{p}{,} \PY{n}{axs} \PY{o}{=} \PY{n}{plt}\PY{o}{.}\PY{n}{subplots}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{,} \PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{8}\PY{p}{,} \PY{l+m+mi}{8}\PY{p}{)}\PY{p}{)}
+    \PY{c+c1}{\PYZsh{} fig2, axs\PYZus{}u = plt.subplots(1, 1, figsize=(4, 4))}
+    \PY{n}{plt}\PY{o}{.}\PY{n}{subplots\PYZus{}adjust}\PY{p}{(}\PY{n}{left}\PY{o}{=}\PY{l+m+mf}{0.1}\PY{p}{,} \PY{n}{bottom}\PY{o}{=}\PY{l+m+mf}{0.1}\PY{p}{,} \PY{n}{right}\PY{o}{=}\PY{l+m+mf}{0.9}\PY{p}{,} \PY{n}{top}\PY{o}{=}\PY{l+m+mf}{0.9}\PY{p}{,} \PY{n}{wspace}\PY{o}{=}\PY{l+m+mf}{0.3}\PY{p}{,}\PY{n}{hspace}\PY{o}{=}\PY{l+m+mf}{0.3}\PY{p}{)}
+    \PY{n}{colors} \PY{o}{=} \PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{blue}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{r}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{green}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+    \PY{n}{linestyle} \PY{o}{=} \PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZhy{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZhy{}\PYZhy{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZhy{}.}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+    
+    \PY{k}{for} \PY{n}{j}\PY{p}{,} \PY{n}{mu} \PY{o+ow}{in} \PY{n+nb}{enumerate}\PY{p}{(}\PY{n}{desired\PYZus{}mu}\PY{p}{)}\PY{p}{:}
+        \PY{n}{K}\PY{p}{,} \PY{n}{P}\PY{p}{,} \PY{n}{Y} \PY{o}{=} \PY{n}{get\PYZus{}K}\PY{p}{(}\PY{n}{system}\PY{p}{,} \PY{n}{mu} \PY{o}{=} \PY{n}{mu}\PY{p}{,} \PY{n}{x0}\PY{o}{=}\PY{n}{x0}\PY{p}{,} \PY{o}{*}\PY{o}{*}\PY{n}{kwargs}\PY{p}{)}
+        \PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{==============}\PY{l+s+si}{\PYZob{}}\PY{n}{mu}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{==============}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+        \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{K: }\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+        \PY{n+nb}{print}\PY{p}{(}\PY{n}{K}\PY{p}{)}
+        \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{K latex: }\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+        \PY{n+nb}{print}\PY{p}{(}\PY{n}{a2l}\PY{o}{.}\PY{n}{to\PYZus{}ltx}\PY{p}{(}\PY{n}{K}\PY{p}{,} \PY{n}{frmt} \PY{o}{=} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+si}{\PYZob{}:2.2f\PYZcb{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{arraytype} \PY{o}{=} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{bmatrix}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{print\PYZus{}out}\PY{o}{=}\PY{k+kc}{False}\PY{p}{)}\PY{p}{)}
+        \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{=============================}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+        \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{A + BK eigvalues: }\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+        \PY{n+nb}{print}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{linalg}\PY{o}{.}\PY{n}{eig}\PY{p}{(}\PY{n}{system}\PY{o}{.}\PY{n}{A}\PY{o}{+}\PY{n}{system}\PY{o}{.}\PY{n}{B}\PY{n+nd}{@K}\PY{p}{)}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{)}
+        \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{A + BK eigvalues latex: }\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+        \PY{n+nb}{print}\PY{p}{(}\PY{n}{a2l}\PY{o}{.}\PY{n}{to\PYZus{}ltx}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{linalg}\PY{o}{.}\PY{n}{eig}\PY{p}{(}\PY{n}{system}\PY{o}{.}\PY{n}{A}\PY{o}{+}\PY{n}{system}\PY{o}{.}\PY{n}{B}\PY{n+nd}{@K}\PY{p}{)}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{,} \PY{n}{frmt} \PY{o}{=} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+si}{\PYZob{}:2.2f\PYZcb{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{arraytype} \PY{o}{=} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{bmatrix}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{print\PYZus{}out}\PY{o}{=}\PY{k+kc}{False}\PY{p}{)}\PY{p}{)}
+        
+        \PY{n}{ss} \PY{o}{=} \PY{n}{control}\PY{o}{.}\PY{n}{ss}\PY{p}{(}\PY{p}{(}\PY{n}{system}\PY{o}{.}\PY{n}{A} \PY{o}{+} \PY{n}{system}\PY{o}{.}\PY{n}{B} \PY{o}{@} \PY{n}{K}\PY{p}{)}\PY{p}{,} \PY{n}{system}\PY{o}{.}\PY{n}{B}\PY{o}{*}\PY{l+m+mi}{0}\PY{p}{,} \PY{n}{system}\PY{o}{.}\PY{n}{A} \PY{o}{*} \PY{l+m+mi}{0}\PY{p}{,} \PY{n}{system}\PY{o}{.}\PY{n}{B} \PY{o}{*} \PY{l+m+mi}{0}\PY{p}{)}
+        \PY{n}{output} \PY{o}{=} \PY{n}{control}\PY{o}{.}\PY{n}{forced\PYZus{}response}\PY{p}{(}\PY{n}{ss}\PY{p}{,} \PY{n}{X0}\PY{o}{=}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{]}\PY{p}{,} \PY{n}{T}\PY{o}{=}\PY{n}{time}\PY{p}{)}\PY{o}{.}\PY{n}{states}
+        \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n}{system}\PY{o}{.}\PY{n}{A}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{)}\PY{p}{:}
+            \PY{n}{idx} \PY{o}{=} \PY{p}{(}\PY{n}{i} \PY{o}{/}\PY{o}{/} \PY{l+m+mi}{2}\PY{p}{,} \PY{n}{i} \PY{o}{\PYZpc{}} \PY{l+m+mi}{2}\PY{p}{)}
+            \PY{k}{if} \PY{n}{i} \PY{o}{==} \PY{l+m+mi}{0}\PY{p}{:}
+                \PY{n}{linestyle} \PY{o}{=} \PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZhy{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZhy{}\PYZhy{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZhy{}.}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+            \PY{k}{else}\PY{p}{:}
+                \PY{n}{linestyle} \PY{o}{=} \PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZhy{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZhy{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZhy{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+            \PY{n}{axs}\PY{p}{[}\PY{n}{idx}\PY{p}{]}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{time}\PY{p}{,} \PY{n}{output}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{p}{,} \PY{n}{linewidth}\PY{o}{=}\PY{l+m+mi}{2}\PY{p}{,} \PY{n}{label}\PY{o}{=}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{mu = }\PY{l+s+si}{\PYZob{}}\PY{n}{mu}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{color}\PY{o}{=}\PY{n}{colors}\PY{p}{[}\PY{o}{\PYZhy{}}\PY{n}{j}\PY{p}{]}\PY{p}{,} \PY{n}{linestyle}\PY{o}{=}\PY{n}{linestyle}\PY{p}{[}\PY{n}{j}\PY{p}{]}\PY{p}{)}
+            \PY{n}{axs}\PY{p}{[}\PY{n}{idx}\PY{p}{]}\PY{o}{.}\PY{n}{set\PYZus{}title}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{x\PYZus{}}\PY{l+s+si}{\PYZob{}}\PY{n}{i}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s1}{(t)}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{fontsize}\PY{o}{=}\PY{l+m+mi}{12}\PY{p}{)}
+            \PY{n}{axs}\PY{p}{[}\PY{n}{idx}\PY{p}{]}\PY{o}{.}\PY{n}{set\PYZus{}xlabel}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{t, [c]}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{fontsize}\PY{o}{=}\PY{l+m+mi}{12}\PY{p}{)}
+            \PY{n}{axs}\PY{p}{[}\PY{n}{idx}\PY{p}{]}\PY{o}{.}\PY{n}{grid}\PY{p}{(}\PY{k+kc}{True}\PY{p}{)}
+            \PY{n}{axs}\PY{p}{[}\PY{n}{idx}\PY{p}{]}\PY{o}{.}\PY{n}{legend}\PY{p}{(}\PY{p}{)}
+
+        \PY{c+c1}{\PYZsh{} linestyle = [\PYZsq{}\PYZhy{}\PYZsq{}, \PYZsq{}\PYZhy{}\PYZsq{}, \PYZsq{}\PYZhy{}\PYZsq{}]}
+        \PY{c+c1}{\PYZsh{} axs\PYZus{}u.plot(time, (K @ output).reshape(\PYZhy{}1), linewidth=2, label=f\PYZdq{}mu = \PYZob{}mu\PYZcb{}\PYZdq{}, color=colors[\PYZhy{}j], linestyle=linestyle[j])}
+        \PY{c+c1}{\PYZsh{} axs\PYZus{}u.set\PYZus{}title(f\PYZsq{}u(t)\PYZsq{}, fontsize=12)}
+        \PY{c+c1}{\PYZsh{} axs\PYZus{}u.set\PYZus{}xlabel(f\PYZdq{}t, [c]\PYZdq{}, fontsize=12)}
+        \PY{c+c1}{\PYZsh{} axs\PYZus{}u.grid(True)}
+        \PY{c+c1}{\PYZsh{} axs\PYZus{}u.legend()}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{9}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{def} \PY{n+nf}{task\PYZus{}2\PYZus{}2}\PY{p}{(}\PY{n}{system}\PY{p}{,} \PY{n}{desired\PYZus{}alpha}\PY{p}{,} \PY{n}{x0}\PY{p}{,} \PY{n}{time\PYZus{}end}\PY{p}{,} \PY{o}{*}\PY{o}{*}\PY{n}{kwargs}\PY{p}{)}\PY{p}{:}
+    \PY{n}{time} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{linspace}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,} \PY{n}{time\PYZus{}end}\PY{p}{,} \PY{l+m+mi}{1000}\PY{p}{)}
+    \PY{n}{fig}\PY{p}{,} \PY{n}{axs} \PY{o}{=} \PY{n}{plt}\PY{o}{.}\PY{n}{subplots}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{,} \PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{8}\PY{p}{,} \PY{l+m+mi}{8}\PY{p}{)}\PY{p}{)}
+    \PY{n}{fig2}\PY{p}{,} \PY{n}{axs\PYZus{}u} \PY{o}{=} \PY{n}{plt}\PY{o}{.}\PY{n}{subplots}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{,} \PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{4}\PY{p}{,} \PY{l+m+mi}{4}\PY{p}{)}\PY{p}{)}
+    \PY{n}{fig}\PY{o}{.}\PY{n}{subplots\PYZus{}adjust}\PY{p}{(}\PY{n}{left}\PY{o}{=}\PY{l+m+mf}{0.1}\PY{p}{,} \PY{n}{bottom}\PY{o}{=}\PY{l+m+mf}{0.1}\PY{p}{,} \PY{n}{right}\PY{o}{=}\PY{l+m+mf}{0.9}\PY{p}{,} \PY{n}{top}\PY{o}{=}\PY{l+m+mf}{0.9}\PY{p}{,} \PY{n}{wspace}\PY{o}{=}\PY{l+m+mf}{0.3}\PY{p}{,}\PY{n}{hspace}\PY{o}{=}\PY{l+m+mf}{0.3}\PY{p}{)}
+    \PY{n}{colors} \PY{o}{=} \PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{blue}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{r}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{green}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+    \PY{n}{linestyle} \PY{o}{=} \PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZhy{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZhy{}\PYZhy{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZhy{}.}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+    
+    \PY{k}{for} \PY{n}{j}\PY{p}{,} \PY{n}{alpha} \PY{o+ow}{in} \PY{n+nb}{enumerate}\PY{p}{(}\PY{n}{desired\PYZus{}alpha}\PY{p}{)}\PY{p}{:}
+        \PY{n}{K}\PY{p}{,} \PY{n}{P}\PY{p}{,} \PY{n}{Y} \PY{o}{=} \PY{n}{get\PYZus{}K}\PY{p}{(}\PY{n}{system}\PY{p}{,} \PY{n}{alpha} \PY{o}{=} \PY{n}{alpha}\PY{p}{,} \PY{n}{x0}\PY{o}{=}\PY{n}{x0}\PY{p}{,} \PY{o}{*}\PY{o}{*}\PY{n}{kwargs}\PY{p}{)}
+        \PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{==============}\PY{l+s+si}{\PYZob{}}\PY{n}{alpha}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{==============}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+        \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{K: }\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+        \PY{n+nb}{print}\PY{p}{(}\PY{n}{K}\PY{p}{)}
+        \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{K latex: }\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+        \PY{n+nb}{print}\PY{p}{(}\PY{n}{a2l}\PY{o}{.}\PY{n}{to\PYZus{}ltx}\PY{p}{(}\PY{n}{K}\PY{p}{,} \PY{n}{frmt} \PY{o}{=} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+si}{\PYZob{}:2.2f\PYZcb{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{arraytype} \PY{o}{=} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{bmatrix}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{print\PYZus{}out}\PY{o}{=}\PY{k+kc}{False}\PY{p}{)}\PY{p}{)}
+        \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{=============================}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+        \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{A + BK eigvalues: }\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+        \PY{n+nb}{print}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{linalg}\PY{o}{.}\PY{n}{eig}\PY{p}{(}\PY{n}{system}\PY{o}{.}\PY{n}{A}\PY{o}{+}\PY{n}{system}\PY{o}{.}\PY{n}{B}\PY{n+nd}{@K}\PY{p}{)}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{)}
+        \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{A + BK eigvalues latex: }\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+        \PY{n+nb}{print}\PY{p}{(}\PY{n}{a2l}\PY{o}{.}\PY{n}{to\PYZus{}ltx}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{linalg}\PY{o}{.}\PY{n}{eig}\PY{p}{(}\PY{n}{system}\PY{o}{.}\PY{n}{A}\PY{o}{+}\PY{n}{system}\PY{o}{.}\PY{n}{B}\PY{n+nd}{@K}\PY{p}{)}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{,} \PY{n}{frmt} \PY{o}{=} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+si}{\PYZob{}:2.2f\PYZcb{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{arraytype} \PY{o}{=} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{bmatrix}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{print\PYZus{}out}\PY{o}{=}\PY{k+kc}{False}\PY{p}{)}\PY{p}{)}
+        
+        \PY{n}{ss} \PY{o}{=} \PY{n}{control}\PY{o}{.}\PY{n}{ss}\PY{p}{(}\PY{p}{(}\PY{n}{system}\PY{o}{.}\PY{n}{A} \PY{o}{+} \PY{n}{system}\PY{o}{.}\PY{n}{B} \PY{o}{@} \PY{n}{K}\PY{p}{)}\PY{p}{,} \PY{n}{system}\PY{o}{.}\PY{n}{B}\PY{o}{*}\PY{l+m+mi}{0}\PY{p}{,} \PY{n}{system}\PY{o}{.}\PY{n}{A} \PY{o}{*} \PY{l+m+mi}{0}\PY{p}{,} \PY{n}{system}\PY{o}{.}\PY{n}{B} \PY{o}{*} \PY{l+m+mi}{0}\PY{p}{)}
+        \PY{n}{output} \PY{o}{=} \PY{n}{control}\PY{o}{.}\PY{n}{forced\PYZus{}response}\PY{p}{(}\PY{n}{ss}\PY{p}{,} \PY{n}{X0}\PY{o}{=}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{]}\PY{p}{,} \PY{n}{T}\PY{o}{=}\PY{n}{time}\PY{p}{)}\PY{o}{.}\PY{n}{states}
+        \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n}{system}\PY{o}{.}\PY{n}{A}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{)}\PY{p}{:}
+            \PY{n}{idx} \PY{o}{=} \PY{p}{(}\PY{n}{i} \PY{o}{/}\PY{o}{/} \PY{l+m+mi}{2}\PY{p}{,} \PY{n}{i} \PY{o}{\PYZpc{}} \PY{l+m+mi}{2}\PY{p}{)}
+            \PY{k}{if} \PY{n}{i} \PY{o}{==} \PY{l+m+mi}{0}\PY{p}{:}
+                \PY{n}{linestyle} \PY{o}{=} \PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZhy{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZhy{}\PYZhy{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZhy{}.}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+            \PY{k}{else}\PY{p}{:}
+                \PY{n}{linestyle} \PY{o}{=} \PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZhy{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZhy{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZhy{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+            \PY{n}{axs}\PY{p}{[}\PY{n}{idx}\PY{p}{]}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{time}\PY{p}{,} \PY{n}{output}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{p}{,} \PY{n}{linewidth}\PY{o}{=}\PY{l+m+mi}{2}\PY{p}{,} \PY{n}{label}\PY{o}{=}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{alpha = }\PY{l+s+si}{\PYZob{}}\PY{n}{alpha}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{color}\PY{o}{=}\PY{n}{colors}\PY{p}{[}\PY{o}{\PYZhy{}}\PY{n}{j}\PY{p}{]}\PY{p}{,} \PY{n}{linestyle}\PY{o}{=}\PY{n}{linestyle}\PY{p}{[}\PY{n}{j}\PY{p}{]}\PY{p}{)}
+            \PY{n}{axs}\PY{p}{[}\PY{n}{idx}\PY{p}{]}\PY{o}{.}\PY{n}{set\PYZus{}title}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{x\PYZus{}}\PY{l+s+si}{\PYZob{}}\PY{n}{i}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s1}{(t)}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{fontsize}\PY{o}{=}\PY{l+m+mi}{12}\PY{p}{)}
+            \PY{n}{axs}\PY{p}{[}\PY{n}{idx}\PY{p}{]}\PY{o}{.}\PY{n}{set\PYZus{}xlabel}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{t, [c]}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{fontsize}\PY{o}{=}\PY{l+m+mi}{12}\PY{p}{)}
+            \PY{n}{axs}\PY{p}{[}\PY{n}{idx}\PY{p}{]}\PY{o}{.}\PY{n}{grid}\PY{p}{(}\PY{k+kc}{True}\PY{p}{)}
+            \PY{n}{axs}\PY{p}{[}\PY{n}{idx}\PY{p}{]}\PY{o}{.}\PY{n}{legend}\PY{p}{(}\PY{p}{)}
+
+        \PY{n}{linestyle} \PY{o}{=} \PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZhy{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZhy{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZhy{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+        \PY{n}{axs\PYZus{}u}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{time}\PY{p}{,} \PY{p}{(}\PY{n}{K} \PY{o}{@} \PY{n}{output}\PY{p}{)}\PY{o}{.}\PY{n}{reshape}\PY{p}{(}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{)}\PY{p}{,} \PY{n}{linewidth}\PY{o}{=}\PY{l+m+mi}{2}\PY{p}{,} \PY{n}{label}\PY{o}{=}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{alpha = }\PY{l+s+si}{\PYZob{}}\PY{n}{alpha}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{color}\PY{o}{=}\PY{n}{colors}\PY{p}{[}\PY{o}{\PYZhy{}}\PY{n}{j}\PY{p}{]}\PY{p}{,} \PY{n}{linestyle}\PY{o}{=}\PY{n}{linestyle}\PY{p}{[}\PY{n}{j}\PY{p}{]}\PY{p}{)}
+        \PY{n}{axs\PYZus{}u}\PY{o}{.}\PY{n}{set\PYZus{}title}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{u(t)}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{fontsize}\PY{o}{=}\PY{l+m+mi}{12}\PY{p}{)}
+        \PY{n}{axs\PYZus{}u}\PY{o}{.}\PY{n}{set\PYZus{}xlabel}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{t, [c]}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{fontsize}\PY{o}{=}\PY{l+m+mi}{12}\PY{p}{)}
+        \PY{n}{axs\PYZus{}u}\PY{o}{.}\PY{n}{grid}\PY{p}{(}\PY{k+kc}{True}\PY{p}{)}
+        \PY{n}{axs\PYZus{}u}\PY{o}{.}\PY{n}{legend}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{10}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{desired\PYZus{}mu} \PY{o}{=} \PY{p}{[}\PY{l+m+mi}{7}\PY{p}{,} \PY{l+m+mf}{12.0}\PY{p}{,} \PY{l+m+mf}{20.0}\PY{p}{]}
+\PY{n}{task\PYZus{}2}\PY{p}{(}\PY{n}{system}\PY{p}{,} \PY{n}{desired\PYZus{}mu}\PY{o}{=}\PY{n}{desired\PYZus{}mu}\PY{p}{,} \PY{n}{x0} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{p}{[}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{,} \PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{,} \PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{,} \PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{]}\PY{p}{)}\PY{p}{,}\PY{n}{time\PYZus{}end}\PY{o}{=}\PY{l+m+mf}{3.0}\PY{p}{,} \PY{n}{alpha}\PY{o}{=}\PY{l+m+mf}{1.0}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+(4, 4) (1, 4) [1]
+Time:  0.0
+==============7==============
+K:
+[[ 0.29557497 -1.19501955 -1.32640675 -2.01915897]]
+K latex:
+\textbackslash{}begin\{bmatrix\}
+  0.30 \& -1.20 \& -1.33 \& -2.02
+\textbackslash{}end\{bmatrix\}
+=============================
+A + BK eigvalues:
+[-1.09089599+6.59197854j -1.09089599-6.59197854j -1.07070447+0.j
+ -5.        +0.j        ]
+A + BK eigvalues latex:
+\textbackslash{}begin\{bmatrix\}
+ -1.09 + 6.59j \& -1.09 + -6.59j \& -1.07 + 0.00j \& -5.00 + 0.00j
+\textbackslash{}end\{bmatrix\}
+(4, 4) (1, 4) [1]
+Time:  0.0
+==============12.0==============
+K:
+[[ 5.55133101 -3.82323174 -5.18948149 -1.97557357]]
+K latex:
+\textbackslash{}begin\{bmatrix\}
+  5.55 \& -3.82 \& -5.19 \& -1.98
+\textbackslash{}end\{bmatrix\}
+=============================
+A + BK eigvalues:
+[-2.10880901+9.76495887j -2.10880901-9.76495887j -1.53233443+0.j
+ -5.        +0.j        ]
+A + BK eigvalues latex:
+\textbackslash{}begin\{bmatrix\}
+ -2.11 + 9.76j \& -2.11 + -9.76j \& -1.53 + 0.00j \& -5.00 + 0.00j
+\textbackslash{}end\{bmatrix\}
+(4, 4) (1, 4) [1]
+Time:  0.0
+==============20.0==============
+K:
+[[ 16.68564396  -8.1887837  -10.73162223  -2.3709375 ]]
+K latex:
+\textbackslash{}begin\{bmatrix\}
+  16.69 \& -8.19 \& -10.73 \& -2.37
+\textbackslash{}end\{bmatrix\}
+=============================
+A + BK eigvalues:
+[-4.67565696+12.08672704j -4.67565696-12.08672704j
+ -1.95028227 +0.j         -5.         +0.j        ]
+A + BK eigvalues latex:
+\textbackslash{}begin\{bmatrix\}
+ -4.68 + 12.09j \& -4.68 + -12.09j \& -1.95 + 0.00j \& -5.00 + 0.00j
+\textbackslash{}end\{bmatrix\}
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{lab9_files/lab9_7_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{11}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{task\PYZus{}2\PYZus{}2}\PY{p}{(}\PY{n}{system}\PY{p}{,} \PY{n}{desired\PYZus{}alpha}\PY{o}{=}\PY{n}{desired\PYZus{}alpha}\PY{p}{,} \PY{n}{x0} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{p}{[}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{,} \PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{,} \PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{,} \PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{]}\PY{p}{)}\PY{p}{,}\PY{n}{time\PYZus{}end}\PY{o}{=}\PY{l+m+mf}{1.0}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Time:  37.54119898415397
+mu:  6.127087316511327
+==============1.0==============
+K:
+[[ 2.85348010e-04 -1.09021091e+00 -1.20901607e+00 -1.97048621e+00]]
+K latex:
+\textbackslash{}begin\{bmatrix\}
+  0.00 \& -1.09 \& -1.21 \& -1.97
+\textbackslash{}end\{bmatrix\}
+=============================
+A + BK eigvalues:
+[-1.00046393+6.52496654j -1.00046393-6.52496654j -1.00074169+0.j
+ -5.        +0.j        ]
+A + BK eigvalues latex:
+\textbackslash{}begin\{bmatrix\}
+ -1.00 + 6.52j \& -1.00 + -6.52j \& -1.00 + 0.00j \& -5.00 + 0.00j
+\textbackslash{}end\{bmatrix\}
+Time:  422.3327267032943
+mu:  20.550735429743003
+==============3.0==============
+K:
+[[ 3.08629655e-03 -5.40703130e+00 -4.82829895e+00 -2.53053190e+00]]
+K latex:
+\textbackslash{}begin\{bmatrix\}
+  0.00 \& -5.41 \& -4.83 \& -2.53
+\textbackslash{}end\{bmatrix\}
+=============================
+A + BK eigvalues:
+[-2.99951394+7.9439475j -2.99951394-7.9439475j -2.99959911+0.j
+ -5.        +0.j       ]
+A + BK eigvalues latex:
+\textbackslash{}begin\{bmatrix\}
+ -3.00 + 7.94j \& -3.00 + -7.94j \& -3.00 + 0.00j \& -5.00 + 0.00j
+\textbackslash{}end\{bmatrix\}
+    \end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+/home/homa/anaconda3/envs/control/lib/python3.10/site-
+packages/cvxpy/problems/problem.py:1403: UserWarning: Solution may be
+inaccurate. Try another solver, adjusting the solver settings, or solve with
+verbose=True for more information.
+  warnings.warn(
+    \end{Verbatim}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Time:  143881.9044431966
+mu:  379.3176827452111
+==============10.0==============
+K:
+[[ 572.37341798 -306.88573824 -116.96467436   71.96343421]]
+K latex:
+\textbackslash{}begin\{bmatrix\}
+  572.37 \& -306.89 \& -116.96 \&  71.96
+\textbackslash{}end\{bmatrix\}
+=============================
+A + BK eigvalues:
+[-70.27685343 +0.j          -8.35929109+10.23692793j
+  -8.35929109-10.23692793j  -5.         +0.j        ]
+A + BK eigvalues latex:
+\textbackslash{}begin\{bmatrix\}
+ -70.28 + 0.00j \& -8.36 + 10.24j \& -8.36 + -10.24j \& -5.00 + 0.00j
+\textbackslash{}end\{bmatrix\}
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{lab9_files/lab9_8_3.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{lab9_files/lab9_8_4.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{16}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{def} \PY{n+nf}{get\PYZus{}L}\PY{p}{(}\PY{n}{system} \PY{p}{:} \PY{n}{System}\PY{p}{,} \PY{n}{alpha}\PY{p}{:} \PY{n+nb}{float}\PY{p}{,} \PY{n}{precision} \PY{p}{:} \PY{n+nb}{float} \PY{o}{=} \PY{l+m+mf}{0.01}\PY{p}{)} \PY{o}{\PYZhy{}}\PY{o}{\PYZgt{}} \PY{n+nb}{tuple}\PY{p}{:}
+    
+    \PY{n}{Q} \PY{o}{=} \PY{n}{cvxpy}\PY{o}{.}\PY{n}{Variable}\PY{p}{(}\PY{n}{system}\PY{o}{.}\PY{n}{A}\PY{o}{.}\PY{n}{shape}\PY{p}{)}
+    \PY{n}{Y} \PY{o}{=} \PY{n}{cvxpy}\PY{o}{.}\PY{n}{Variable}\PY{p}{(}\PY{p}{(}\PY{n}{system}\PY{o}{.}\PY{n}{C}\PY{o}{.}\PY{n}{T}\PY{p}{)}\PY{o}{.}\PY{n}{shape}\PY{p}{)}
+    
+    \PY{n}{constraints} \PY{o}{=} \PY{p}{[}\PY{n}{Q} \PY{o}{\PYZhy{}} \PY{n}{precision}\PY{o}{*}\PY{n}{np}\PY{o}{.}\PY{n}{eye}\PY{p}{(}\PY{n}{system}\PY{o}{.}\PY{n}{A}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{)} \PY{o}{\PYZgt{}\PYZgt{}} \PY{l+m+mi}{0}\PY{p}{,} \PY{n}{system}\PY{o}{.}\PY{n}{A}\PY{o}{.}\PY{n}{T} \PY{o}{@} \PY{n}{Q} \PY{o}{+} \PY{n}{Q} \PY{o}{@} \PY{n}{system}\PY{o}{.}\PY{n}{A} \PY{o}{+} \PY{l+m+mi}{2}\PY{o}{*}\PY{n}{alpha}\PY{o}{*}\PY{n}{Q} \PY{o}{+} \PY{n}{system}\PY{o}{.}\PY{n}{C}\PY{o}{.}\PY{n}{T} \PY{o}{@} \PY{n}{Y}\PY{o}{.}\PY{n}{T} \PY{o}{+} \PY{n}{Y} \PY{o}{@} \PY{n}{system}\PY{o}{.}\PY{n}{C} \PY{o}{+} \PY{n}{precision}\PY{o}{*}\PY{n}{np}\PY{o}{.}\PY{n}{eye}\PY{p}{(}\PY{n}{system}\PY{o}{.}\PY{n}{A}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{)} \PY{o}{\PYZlt{}\PYZlt{}} \PY{l+m+mi}{0}\PY{p}{]}
+    \PY{n}{expr} \PY{o}{=} \PY{n}{cvxpy}\PY{o}{.}\PY{n}{sum\PYZus{}squares}\PY{p}{(}\PY{n}{Q}\PY{o}{*}\PY{l+m+mi}{0}\PY{p}{)}
+    
+    \PY{n}{problem} \PY{o}{=} \PY{n}{cvxpy}\PY{o}{.}\PY{n}{Problem}\PY{p}{(}\PY{n}{cvxpy}\PY{o}{.}\PY{n}{Minimize}\PY{p}{(}\PY{n}{expr}\PY{p}{)}\PY{p}{,} \PY{n}{constraints}\PY{p}{)}
+    \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Result: }\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{problem}\PY{o}{.}\PY{n}{solve}\PY{p}{(}\PY{p}{)}\PY{p}{)}
+    \PY{n}{Q} \PY{o}{=} \PY{n}{Q}\PY{o}{.}\PY{n}{value}
+    \PY{n}{Y} \PY{o}{=} \PY{n}{Y}\PY{o}{.}\PY{n}{value}
+   
+    \PY{n}{L} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{linalg}\PY{o}{.}\PY{n}{pinv}\PY{p}{(}\PY{n}{Q}\PY{p}{)} \PY{o}{@} \PY{n}{Y}
+    
+    \PY{c+c1}{\PYZsh{} assert np.all(num.real \PYZlt{} \PYZhy{}alpha for num in np.linalg.eig(system.A+system.B@K)[0])}
+
+    \PY{k}{return} \PY{n}{L}\PY{p}{,} \PY{n}{Q}\PY{p}{,} \PY{n}{Y}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{47}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{def} \PY{n+nf}{task\PYZus{}3}\PY{p}{(}\PY{n}{system}\PY{p}{,} \PY{n}{desired\PYZus{}alpha}\PY{p}{,} \PY{n}{time\PYZus{}end} \PY{o}{=} \PY{l+m+mf}{3.0}\PY{p}{,} \PY{o}{*}\PY{o}{*}\PY{n}{kwargs}\PY{p}{)}\PY{p}{:}
+    \PY{n}{time} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{linspace}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,} \PY{n}{time\PYZus{}end}\PY{p}{,} \PY{l+m+mi}{1000}\PY{p}{)}
+    \PY{n}{fig}\PY{p}{,} \PY{n}{axs} \PY{o}{=} \PY{n}{plt}\PY{o}{.}\PY{n}{subplots}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{,} \PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{8}\PY{p}{,} \PY{l+m+mi}{8}\PY{p}{)}\PY{p}{)}
+    \PY{n}{fig}\PY{o}{.}\PY{n}{subplots\PYZus{}adjust}\PY{p}{(}\PY{n}{left}\PY{o}{=}\PY{l+m+mf}{0.1}\PY{p}{,} \PY{n}{bottom}\PY{o}{=}\PY{l+m+mf}{0.1}\PY{p}{,} \PY{n}{right}\PY{o}{=}\PY{l+m+mf}{0.9}\PY{p}{,} \PY{n}{top}\PY{o}{=}\PY{l+m+mf}{0.9}\PY{p}{,} \PY{n}{wspace}\PY{o}{=}\PY{l+m+mf}{0.4}\PY{p}{,}\PY{n}{hspace}\PY{o}{=}\PY{l+m+mf}{0.4}\PY{p}{)}
+    \PY{n}{fig2}\PY{p}{,} \PY{n}{axs\PYZus{}e} \PY{o}{=} \PY{n}{plt}\PY{o}{.}\PY{n}{subplots}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{,} \PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{8}\PY{p}{,} \PY{l+m+mi}{8}\PY{p}{)}\PY{p}{)}
+    \PY{n}{fig2}\PY{o}{.}\PY{n}{subplots\PYZus{}adjust}\PY{p}{(}\PY{n}{left}\PY{o}{=}\PY{l+m+mf}{0.1}\PY{p}{,} \PY{n}{bottom}\PY{o}{=}\PY{l+m+mf}{0.1}\PY{p}{,} \PY{n}{right}\PY{o}{=}\PY{l+m+mf}{0.9}\PY{p}{,} \PY{n}{top}\PY{o}{=}\PY{l+m+mf}{0.9}\PY{p}{,} \PY{n}{wspace}\PY{o}{=}\PY{l+m+mf}{0.4}\PY{p}{,}\PY{n}{hspace}\PY{o}{=}\PY{l+m+mf}{0.4}\PY{p}{)}
+    
+    \PY{n}{colors\PYZus{}system} \PY{o}{=} \PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{blue}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{green}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+    \PY{n}{colors\PYZus{}observer} \PY{o}{=} \PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{green}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{red}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{orange}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+    \PY{n}{linestyle} \PY{o}{=} \PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZhy{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZhy{}\PYZhy{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZhy{}.}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+    
+    \PY{k}{for} \PY{n}{j}\PY{p}{,} \PY{n}{alpha} \PY{o+ow}{in} \PY{n+nb}{enumerate}\PY{p}{(}\PY{n}{desired\PYZus{}alpha}\PY{p}{)}\PY{p}{:}
+        \PY{n}{L}\PY{p}{,} \PY{n}{Q}\PY{p}{,} \PY{n}{Y} \PY{o}{=} \PY{n}{get\PYZus{}L}\PY{p}{(}\PY{n}{system}\PY{p}{,} \PY{n}{alpha}\PY{p}{,} \PY{o}{*}\PY{o}{*}\PY{n}{kwargs}\PY{p}{)}
+        \PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{==============}\PY{l+s+si}{\PYZob{}}\PY{n}{alpha}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{==============}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+        \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{L: }\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+        \PY{n+nb}{print}\PY{p}{(}\PY{n}{L}\PY{p}{)}
+        \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{L latex: }\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+        \PY{n+nb}{print}\PY{p}{(}\PY{n}{a2l}\PY{o}{.}\PY{n}{to\PYZus{}ltx}\PY{p}{(}\PY{n}{L}\PY{p}{,} \PY{n}{frmt} \PY{o}{=} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+si}{\PYZob{}:2.2f\PYZcb{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{arraytype} \PY{o}{=} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{bmatrix}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{print\PYZus{}out}\PY{o}{=}\PY{k+kc}{False}\PY{p}{)}\PY{p}{)}
+        \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{=============================}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+        \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{A + LC eigvalues: }\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+        \PY{n+nb}{print}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{linalg}\PY{o}{.}\PY{n}{eig}\PY{p}{(}\PY{n}{system}\PY{o}{.}\PY{n}{A}\PY{o}{+}\PY{n}{L}\PY{n+nd}{@system}\PY{o}{.}\PY{n}{C}\PY{p}{)}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{)}
+        \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{A + LC eigvalues latex: }\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+        \PY{n+nb}{print}\PY{p}{(}\PY{n}{a2l}\PY{o}{.}\PY{n}{to\PYZus{}ltx}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{linalg}\PY{o}{.}\PY{n}{eig}\PY{p}{(}\PY{n}{system}\PY{o}{.}\PY{n}{A}\PY{o}{+}\PY{n}{L}\PY{n+nd}{@system}\PY{o}{.}\PY{n}{C}\PY{p}{)}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{,} \PY{n}{frmt} \PY{o}{=} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+si}{\PYZob{}:2.2f\PYZcb{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{arraytype} \PY{o}{=} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{bmatrix}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{print\PYZus{}out}\PY{o}{=}\PY{k+kc}{False}\PY{p}{)}\PY{p}{)}
+        
+        \PY{n}{ss\PYZus{}orig} \PY{o}{=} \PY{n}{control}\PY{o}{.}\PY{n}{ss}\PY{p}{(}\PY{n}{A}\PY{p}{,} \PY{n}{np}\PY{o}{.}\PY{n}{zeros}\PY{p}{(}\PY{p}{(}\PY{n}{A}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{)}\PY{p}{)}\PY{p}{,} \PY{n}{system}\PY{o}{.}\PY{n}{C}\PY{p}{,} \PY{n}{np}\PY{o}{.}\PY{n}{zeros}\PY{p}{(}\PY{p}{(}\PY{n}{system}\PY{o}{.}\PY{n}{C}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{)}\PY{p}{)}\PY{p}{)}
+        \PY{n}{original\PYZus{}resp} \PY{o}{=} \PY{n}{control}\PY{o}{.}\PY{n}{forced\PYZus{}response}\PY{p}{(}\PY{n}{ss\PYZus{}orig}\PY{p}{,} \PY{n}{X0}\PY{o}{=}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{]}\PY{p}{,} \PY{n}{T}\PY{o}{=}\PY{n}{time}\PY{p}{)}
+        \PY{n}{ss} \PY{o}{=} \PY{n}{control}\PY{o}{.}\PY{n}{ss}\PY{p}{(}\PY{p}{(}\PY{n}{system}\PY{o}{.}\PY{n}{A} \PY{o}{+} \PY{n}{L}\PY{n+nd}{@system}\PY{o}{.}\PY{n}{C}\PY{p}{)}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{n}{L}\PY{p}{,} \PY{n}{A}\PY{o}{*}\PY{l+m+mi}{0}\PY{p}{,} \PY{n}{L}\PY{o}{*}\PY{l+m+mi}{0}\PY{p}{)}
+        \PY{n}{output} \PY{o}{=} \PY{n}{control}\PY{o}{.}\PY{n}{forced\PYZus{}response}\PY{p}{(}\PY{n}{ss}\PY{p}{,} \PY{n}{X0}\PY{o}{=}\PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{,} \PY{n}{U}\PY{o}{=}\PY{n}{original\PYZus{}resp}\PY{o}{.}\PY{n}{outputs}\PY{o}{.}\PY{n}{reshape}\PY{p}{(}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{)}\PY{p}{,} \PY{n}{T}\PY{o}{=}\PY{n}{time}\PY{p}{)}\PY{o}{.}\PY{n}{states}
+        \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n}{system}\PY{o}{.}\PY{n}{A}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{)}\PY{p}{:}
+            \PY{n}{idx} \PY{o}{=} \PY{p}{(}\PY{n}{i} \PY{o}{/}\PY{o}{/} \PY{l+m+mi}{2}\PY{p}{,} \PY{n}{i} \PY{o}{\PYZpc{}} \PY{l+m+mi}{2}\PY{p}{)}
+            \PY{k}{if} \PY{n}{i} \PY{o}{==} \PY{l+m+mi}{0}\PY{p}{:}
+                \PY{n}{linestyle} \PY{o}{=} \PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZhy{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZhy{}\PYZhy{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZhy{}.}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+            \PY{k}{else}\PY{p}{:}
+                \PY{n}{linestyle} \PY{o}{=} \PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZhy{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZhy{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZhy{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+            \PY{k}{if} \PY{n}{j} \PY{o}{==} \PY{l+m+mi}{0}\PY{p}{:}
+                \PY{n}{axs}\PY{p}{[}\PY{n}{idx}\PY{p}{]}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{time}\PY{p}{,} \PY{n}{original\PYZus{}resp}\PY{o}{.}\PY{n}{states}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{p}{,} \PY{n}{linewidth}\PY{o}{=}\PY{l+m+mi}{2}\PY{p}{,} \PY{n}{label}\PY{o}{=}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{system}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{color}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{blue}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{linestyle}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZhy{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+            \PY{n}{axs}\PY{p}{[}\PY{n}{idx}\PY{p}{]}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{time}\PY{p}{,} \PY{n}{output}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{p}{,} \PY{n}{linewidth}\PY{o}{=}\PY{l+m+mi}{2}\PY{p}{,} \PY{n}{label}\PY{o}{=}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{observer alpha = }\PY{l+s+si}{\PYZob{}}\PY{n}{alpha}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{color}\PY{o}{=}\PY{n}{colors\PYZus{}observer}\PY{p}{[}\PY{o}{\PYZhy{}}\PY{n}{j}\PY{p}{]}\PY{p}{,} \PY{n}{linestyle}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZhy{}\PYZhy{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+            \PY{n}{axs}\PY{p}{[}\PY{n}{idx}\PY{p}{]}\PY{o}{.}\PY{n}{set\PYZus{}title}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{x\PYZus{}}\PY{l+s+si}{\PYZob{}}\PY{n}{i}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s1}{(t)}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{fontsize}\PY{o}{=}\PY{l+m+mi}{12}\PY{p}{)}
+            \PY{n}{axs}\PY{p}{[}\PY{n}{idx}\PY{p}{]}\PY{o}{.}\PY{n}{set\PYZus{}xlabel}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{t, [c]}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{fontsize}\PY{o}{=}\PY{l+m+mi}{12}\PY{p}{)}
+            \PY{n}{axs}\PY{p}{[}\PY{n}{idx}\PY{p}{]}\PY{o}{.}\PY{n}{grid}\PY{p}{(}\PY{k+kc}{True}\PY{p}{)}
+            \PY{n}{axs}\PY{p}{[}\PY{n}{idx}\PY{p}{]}\PY{o}{.}\PY{n}{legend}\PY{p}{(}\PY{p}{)}
+
+        \PY{c+c1}{\PYZsh{} linestyle = [\PYZsq{}\PYZhy{}\PYZsq{}, \PYZsq{}\PYZhy{}\PYZhy{}\PYZsq{}, \PYZsq{}\PYZhy{}.\PYZsq{}]}
+            
+            \PY{n}{ss\PYZus{}e} \PY{o}{=} \PY{n}{control}\PY{o}{.}\PY{n}{ss}\PY{p}{(}\PY{n}{system}\PY{o}{.}\PY{n}{A}\PY{o}{+}\PY{n}{L}\PY{n+nd}{@system}\PY{o}{.}\PY{n}{C}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{n}{L}\PY{o}{*}\PY{l+m+mi}{0}\PY{p}{,} \PY{n}{system}\PY{o}{.}\PY{n}{C}\PY{p}{,} \PY{n}{np}\PY{o}{.}\PY{n}{zeros}\PY{p}{(}\PY{p}{(}\PY{n}{system}\PY{o}{.}\PY{n}{C}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{,} \PY{n}{L}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{)}\PY{p}{)}\PY{p}{)}
+            \PY{n}{output\PYZus{}e} \PY{o}{=} \PY{n}{control}\PY{o}{.}\PY{n}{forced\PYZus{}response}\PY{p}{(}\PY{n}{ss\PYZus{}e}\PY{p}{,} \PY{n}{X0}\PY{o}{=}\PY{p}{[}\PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{]}\PY{p}{,} \PY{n}{T}\PY{o}{=}\PY{n}{time}\PY{p}{)}\PY{o}{.}\PY{n}{states}
+            \PY{n}{axs\PYZus{}e}\PY{p}{[}\PY{n}{idx}\PY{p}{]}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{time}\PY{p}{,} \PY{n}{output\PYZus{}e}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{p}{,} \PY{n}{linewidth}\PY{o}{=}\PY{l+m+mi}{2}\PY{p}{,} \PY{n}{label}\PY{o}{=}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{alpha = }\PY{l+s+si}{\PYZob{}}\PY{n}{alpha}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{color}\PY{o}{=}\PY{n}{colors\PYZus{}observer}\PY{p}{[}\PY{o}{\PYZhy{}}\PY{n}{j}\PY{p}{]}\PY{p}{,} \PY{n}{linestyle}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZhy{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+            \PY{n}{axs\PYZus{}e}\PY{p}{[}\PY{n}{idx}\PY{p}{]}\PY{o}{.}\PY{n}{set\PYZus{}title}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{e\PYZus{}}\PY{l+s+si}{\PYZob{}}\PY{n}{i}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s1}{(t)}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{fontsize}\PY{o}{=}\PY{l+m+mi}{12}\PY{p}{)}
+            \PY{n}{axs\PYZus{}e}\PY{p}{[}\PY{n}{idx}\PY{p}{]}\PY{o}{.}\PY{n}{set\PYZus{}xlabel}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{t, [c]}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{fontsize}\PY{o}{=}\PY{l+m+mi}{12}\PY{p}{)}
+            \PY{n}{axs\PYZus{}e}\PY{p}{[}\PY{n}{idx}\PY{p}{]}\PY{o}{.}\PY{n}{grid}\PY{p}{(}\PY{k+kc}{True}\PY{p}{)}
+            \PY{n}{axs\PYZus{}e}\PY{p}{[}\PY{n}{idx}\PY{p}{]}\PY{o}{.}\PY{n}{legend}\PY{p}{(}\PY{p}{)}
+            
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{48}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{A} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{p}{[}
+    \PY{p}{[}\PY{l+m+mi}{0}\PY{p}{,} \PY{l+m+mi}{7}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mi}{7}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mi}{0}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mi}{0}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{]}\PY{p}{,}
+\PY{p}{]}\PY{p}{)}
+\PY{n}{C} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{p}{[}
+    \PY{p}{[}\PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{,} \PY{l+m+mi}{6}\PY{p}{]}
+\PY{p}{]}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{a2l}\PY{o}{.}\PY{n}{to\PYZus{}ltx}\PY{p}{(}\PY{n}{A}\PY{p}{,} \PY{n}{frmt} \PY{o}{=} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+si}{\PYZob{}:2\PYZcb{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{arraytype} \PY{o}{=} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{bmatrix}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{print\PYZus{}out}\PY{o}{=}\PY{k+kc}{False}\PY{p}{)}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{n}{a2l}\PY{o}{.}\PY{n}{to\PYZus{}ltx}\PY{p}{(}\PY{n}{C}\PY{p}{,} \PY{n}{frmt} \PY{o}{=} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+si}{\PYZob{}:2\PYZcb{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{arraytype} \PY{o}{=} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{bmatrix}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{print\PYZus{}out}\PY{o}{=}\PY{k+kc}{False}\PY{p}{)}\PY{p}{)}
+\PY{n}{system} \PY{o}{=} \PY{n}{System}\PY{p}{(}\PY{n}{A}\PY{p}{,} \PY{n}{B}\PY{o}{*}\PY{l+m+mi}{0}\PY{p}{,} \PY{n}{C}\PY{p}{,} \PY{n}{B}\PY{o}{*}\PY{l+m+mi}{0}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+\textbackslash{}begin\{bmatrix\}
+   0  \&   7  \&   0  \&   0 \textbackslash{}\textbackslash{}
+ -7  \&   0  \&   0  \&   0 \textbackslash{}\textbackslash{}
+   0  \&   0  \&   0  \&   2 \textbackslash{}\textbackslash{}
+   0  \&   0  \& -2  \&   0
+\textbackslash{}end\{bmatrix\}
+\textbackslash{}begin\{bmatrix\}
+   1  \&   0  \&   0  \&   6
+\textbackslash{}end\{bmatrix\}
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{49}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{task\PYZus{}3}\PY{p}{(}\PY{n}{system}\PY{p}{,} \PY{p}{[}\PY{l+m+mf}{1.0}\PY{p}{,} \PY{l+m+mf}{3.0}\PY{p}{,} \PY{l+m+mf}{5.0}\PY{p}{]}\PY{p}{,} \PY{n}{time\PYZus{}end}\PY{o}{=}\PY{l+m+mi}{3}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Result:  0.0
+==============1.0==============
+L:
+[[-1.69363694]
+ [-2.36206043]
+ [ 0.74555809]
+ [-0.67115219]]
+L latex:
+\textbackslash{}begin\{bmatrix\}
+ -1.69\textbackslash{}\textbackslash{}
+ -2.36\textbackslash{}\textbackslash{}
+  0.75\textbackslash{}\textbackslash{}
+ -0.67
+\textbackslash{}end\{bmatrix\}
+=============================
+A + LC eigvalues:
+[-1.39767276+7.50544799j -1.39767276-7.50544799j -1.46260229+3.14320195j
+ -1.46260229-3.14320195j]
+A + LC eigvalues latex:
+\textbackslash{}begin\{bmatrix\}
+ -1.40 + 7.51j \& -1.40 + -7.51j \& -1.46 + 3.14j \& -1.46 + -3.14j
+\textbackslash{}end\{bmatrix\}
+Result:  0.0
+==============3.0==============
+L:
+[[  6.2059908 ]
+ [-11.26762516]
+ [  4.22526266]
+ [ -3.15233567]]
+L latex:
+\textbackslash{}begin\{bmatrix\}
+  6.21\textbackslash{}\textbackslash{}
+ -11.27\textbackslash{}\textbackslash{}
+  4.23\textbackslash{}\textbackslash{}
+ -3.15
+\textbackslash{}end\{bmatrix\}
+=============================
+A + LC eigvalues:
+[-3.18581536+10.31183808j -3.18581536-10.31183808j
+ -3.16819624 +3.96011155j -3.16819624 -3.96011155j]
+A + LC eigvalues latex:
+\textbackslash{}begin\{bmatrix\}
+ -3.19 + 10.31j \& -3.19 + -10.31j \& -3.17 + 3.96j \& -3.17 + -3.96j
+\textbackslash{}end\{bmatrix\}
+Result:  0.0
+==============5.0==============
+L:
+[[170.13639205]
+ [-25.518639  ]
+ [ 52.11237875]
+ [-32.51612152]]
+L latex:
+\textbackslash{}begin\{bmatrix\}
+  170.14\textbackslash{}\textbackslash{}
+ -25.52\textbackslash{}\textbackslash{}
+  52.11\textbackslash{}\textbackslash{}
+ -32.52
+\textbackslash{}end\{bmatrix\}
+=============================
+A + LC eigvalues:
+[-6.1348593 +24.80541668j -6.1348593 -24.80541668j
+ -6.34530923 +2.83911185j -6.34530923 -2.83911185j]
+A + LC eigvalues latex:
+\textbackslash{}begin\{bmatrix\}
+ -6.13 + 24.81j \& -6.13 + -24.81j \& -6.35 + 2.84j \& -6.35 + -2.84j
+\textbackslash{}end\{bmatrix\}
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{lab9_files/lab9_12_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{lab9_files/lab9_12_2.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{50}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{CToolbox}\PY{o}{.}\PY{n}{check\PYZus{}eigenvalues\PYZus{}observable}\PY{p}{(}\PY{n}{A}\PY{p}{,} \PY{n}{C}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{50}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+array([ True,  True,  True,  True])
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{69}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{A} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{p}{[}
+    \PY{p}{[}\PY{l+m+mi}{3}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mi}{3}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mi}{5}\PY{p}{,} \PY{l+m+mi}{7}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mi}{3}\PY{p}{,} \PY{l+m+mi}{3}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mi}{7}\PY{p}{,} \PY{l+m+mi}{5}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mi}{5}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mi}{7}\PY{p}{,} \PY{l+m+mi}{3}\PY{p}{,} \PY{l+m+mi}{3}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mi}{7}\PY{p}{,} \PY{l+m+mi}{5}\PY{p}{,} \PY{l+m+mi}{3}\PY{p}{,} \PY{l+m+mi}{3}\PY{p}{]}\PY{p}{,}
+\PY{p}{]}\PY{p}{)}
+\PY{n}{B} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{p}{[}
+    \PY{p}{[}\PY{l+m+mi}{16}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mi}{12}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mi}{12}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{l+m+mi}{12}\PY{p}{]}
+\PY{p}{]}\PY{p}{)}
+\PY{n}{C} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{p}{[}
+    \PY{p}{[}\PY{l+m+mi}{3}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{3}\PY{p}{]}\PY{p}{,}
+    \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{]}
+\PY{p}{]}\PY{p}{)}
+\PY{n}{system} \PY{o}{=} \PY{n}{System}\PY{p}{(}\PY{n}{A}\PY{p}{,} \PY{n}{B}\PY{p}{,} \PY{n}{C}\PY{p}{,} \PY{n}{B}\PY{o}{*}\PY{l+m+mi}{0}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{98}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{def} \PY{n+nf}{task\PYZus{}4}\PY{p}{(}\PY{n}{system}\PY{p}{,} \PY{n}{desired\PYZus{}alpha}\PY{p}{,} \PY{n}{time\PYZus{}end} \PY{o}{=} \PY{l+m+mf}{3.0}\PY{p}{,} \PY{o}{*}\PY{o}{*}\PY{n}{kwargs}\PY{p}{)}\PY{p}{:}
+    \PY{n}{time} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{linspace}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,} \PY{n}{time\PYZus{}end}\PY{p}{,} \PY{l+m+mi}{1000}\PY{p}{)}
+    \PY{n}{fig}\PY{p}{,} \PY{n}{axs} \PY{o}{=} \PY{n}{plt}\PY{o}{.}\PY{n}{subplots}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{,} \PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{8}\PY{p}{,} \PY{l+m+mi}{8}\PY{p}{)}\PY{p}{)}
+    \PY{n}{fig}\PY{o}{.}\PY{n}{subplots\PYZus{}adjust}\PY{p}{(}\PY{n}{left}\PY{o}{=}\PY{l+m+mf}{0.1}\PY{p}{,} \PY{n}{bottom}\PY{o}{=}\PY{l+m+mf}{0.1}\PY{p}{,} \PY{n}{right}\PY{o}{=}\PY{l+m+mf}{0.9}\PY{p}{,} \PY{n}{top}\PY{o}{=}\PY{l+m+mf}{0.9}\PY{p}{,} \PY{n}{wspace}\PY{o}{=}\PY{l+m+mf}{0.4}\PY{p}{,}\PY{n}{hspace}\PY{o}{=}\PY{l+m+mf}{0.4}\PY{p}{)}
+    \PY{n}{fig2}\PY{p}{,} \PY{n}{axs\PYZus{}e} \PY{o}{=} \PY{n}{plt}\PY{o}{.}\PY{n}{subplots}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{,} \PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{8}\PY{p}{,} \PY{l+m+mi}{8}\PY{p}{)}\PY{p}{)}
+    \PY{n}{fig2}\PY{o}{.}\PY{n}{subplots\PYZus{}adjust}\PY{p}{(}\PY{n}{left}\PY{o}{=}\PY{l+m+mf}{0.1}\PY{p}{,} \PY{n}{bottom}\PY{o}{=}\PY{l+m+mf}{0.1}\PY{p}{,} \PY{n}{right}\PY{o}{=}\PY{l+m+mf}{0.9}\PY{p}{,} \PY{n}{top}\PY{o}{=}\PY{l+m+mf}{0.9}\PY{p}{,} \PY{n}{wspace}\PY{o}{=}\PY{l+m+mf}{0.4}\PY{p}{,}\PY{n}{hspace}\PY{o}{=}\PY{l+m+mf}{0.4}\PY{p}{)}
+    \PY{n}{fig3}\PY{p}{,} \PY{n}{axs\PYZus{}u} \PY{o}{=} \PY{n}{plt}\PY{o}{.}\PY{n}{subplots}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{,} \PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{4}\PY{p}{,} \PY{l+m+mi}{4}\PY{p}{)}\PY{p}{)}
+    \PY{n}{fig3}\PY{o}{.}\PY{n}{subplots\PYZus{}adjust}\PY{p}{(}\PY{n}{left}\PY{o}{=}\PY{l+m+mf}{0.1}\PY{p}{,} \PY{n}{bottom}\PY{o}{=}\PY{l+m+mf}{0.1}\PY{p}{,} \PY{n}{right}\PY{o}{=}\PY{l+m+mf}{0.9}\PY{p}{,} \PY{n}{top}\PY{o}{=}\PY{l+m+mf}{0.9}\PY{p}{,} \PY{n}{wspace}\PY{o}{=}\PY{l+m+mf}{0.4}\PY{p}{,}\PY{n}{hspace}\PY{o}{=}\PY{l+m+mf}{0.4}\PY{p}{)}
+    \PY{n}{fig4}\PY{p}{,} \PY{n}{axs\PYZus{}y} \PY{o}{=} \PY{n}{plt}\PY{o}{.}\PY{n}{subplots}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{,} \PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{8}\PY{p}{,} \PY{l+m+mi}{4}\PY{p}{)}\PY{p}{)}
+    \PY{n}{fig4}\PY{o}{.}\PY{n}{subplots\PYZus{}adjust}\PY{p}{(}\PY{n}{left}\PY{o}{=}\PY{l+m+mf}{0.1}\PY{p}{,} \PY{n}{bottom}\PY{o}{=}\PY{l+m+mf}{0.1}\PY{p}{,} \PY{n}{right}\PY{o}{=}\PY{l+m+mf}{0.9}\PY{p}{,} \PY{n}{top}\PY{o}{=}\PY{l+m+mf}{0.9}\PY{p}{,} \PY{n}{wspace}\PY{o}{=}\PY{l+m+mf}{0.4}\PY{p}{,}\PY{n}{hspace}\PY{o}{=}\PY{l+m+mf}{0.4}\PY{p}{)}
+    
+    \PY{n}{colors\PYZus{}system} \PY{o}{=} \PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{blue}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{green}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+    \PY{n}{colors\PYZus{}observer} \PY{o}{=} \PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{red}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{orange}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+    \PY{n}{linestyle} \PY{o}{=} \PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZhy{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZhy{}\PYZhy{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZhy{}.}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+    
+    \PY{k}{for} \PY{n}{j}\PY{p}{,} \PY{n}{alpha} \PY{o+ow}{in} \PY{n+nb}{enumerate}\PY{p}{(}\PY{n}{desired\PYZus{}alpha}\PY{p}{)}\PY{p}{:}
+        \PY{n}{L}\PY{p}{,} \PY{n}{\PYZus{}}\PY{p}{,} \PY{n}{\PYZus{}} \PY{o}{=} \PY{n}{get\PYZus{}L}\PY{p}{(}\PY{n}{system}\PY{p}{,} \PY{n}{alpha}\PY{p}{,} \PY{o}{*}\PY{o}{*}\PY{n}{kwargs}\PY{p}{)}
+        \PY{n}{K}\PY{p}{,} \PY{n}{\PYZus{}}\PY{p}{,} \PY{n}{\PYZus{}} \PY{o}{=} \PY{n}{get\PYZus{}K}\PY{p}{(}\PY{n}{system}\PY{p}{,} \PY{n}{alpha}\PY{p}{,} \PY{o}{*}\PY{o}{*}\PY{n}{kwargs}\PY{p}{)}
+        \PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{==============}\PY{l+s+si}{\PYZob{}}\PY{n}{alpha}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{==============}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+        \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{K: }\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+        \PY{n+nb}{print}\PY{p}{(}\PY{n}{K}\PY{p}{)}
+        \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{K latex: }\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+        \PY{n+nb}{print}\PY{p}{(}\PY{n}{a2l}\PY{o}{.}\PY{n}{to\PYZus{}ltx}\PY{p}{(}\PY{n}{K}\PY{p}{,} \PY{n}{frmt} \PY{o}{=} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+si}{\PYZob{}:2.2f\PYZcb{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{arraytype} \PY{o}{=} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{bmatrix}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{print\PYZus{}out}\PY{o}{=}\PY{k+kc}{False}\PY{p}{)}\PY{p}{)}
+        \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{L: }\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+        \PY{n+nb}{print}\PY{p}{(}\PY{n}{L}\PY{p}{)}
+        \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{L latex: }\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+        \PY{n+nb}{print}\PY{p}{(}\PY{n}{a2l}\PY{o}{.}\PY{n}{to\PYZus{}ltx}\PY{p}{(}\PY{n}{L}\PY{p}{,} \PY{n}{frmt} \PY{o}{=} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+si}{\PYZob{}:2.2f\PYZcb{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{arraytype} \PY{o}{=} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{bmatrix}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{print\PYZus{}out}\PY{o}{=}\PY{k+kc}{False}\PY{p}{)}\PY{p}{)}
+        \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{=============================}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+        \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{A + BK eigvalues: }\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+        \PY{n+nb}{print}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{linalg}\PY{o}{.}\PY{n}{eig}\PY{p}{(}\PY{n}{system}\PY{o}{.}\PY{n}{A}\PY{o}{+}\PY{n}{system}\PY{o}{.}\PY{n}{B}\PY{n+nd}{@K}\PY{p}{)}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{)}
+        \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{A + BK eigvalues latex: }\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+        \PY{n+nb}{print}\PY{p}{(}\PY{n}{a2l}\PY{o}{.}\PY{n}{to\PYZus{}ltx}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{linalg}\PY{o}{.}\PY{n}{eig}\PY{p}{(}\PY{n}{system}\PY{o}{.}\PY{n}{A}\PY{o}{+}\PY{n}{system}\PY{o}{.}\PY{n}{B}\PY{n+nd}{@K}\PY{p}{)}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{,} \PY{n}{frmt} \PY{o}{=} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+si}{\PYZob{}:2.2f\PYZcb{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{arraytype} \PY{o}{=} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{bmatrix}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{print\PYZus{}out}\PY{o}{=}\PY{k+kc}{False}\PY{p}{)}\PY{p}{)}
+        
+        \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{A + LC eigvalues: }\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+        \PY{n+nb}{print}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{linalg}\PY{o}{.}\PY{n}{eig}\PY{p}{(}\PY{n}{system}\PY{o}{.}\PY{n}{A}\PY{o}{+}\PY{n}{L}\PY{n+nd}{@system}\PY{o}{.}\PY{n}{C}\PY{p}{)}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{)}
+        \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{A + LC eigvalues latex: }\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+        \PY{n+nb}{print}\PY{p}{(}\PY{n}{a2l}\PY{o}{.}\PY{n}{to\PYZus{}ltx}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{linalg}\PY{o}{.}\PY{n}{eig}\PY{p}{(}\PY{n}{system}\PY{o}{.}\PY{n}{A}\PY{o}{+}\PY{n}{L}\PY{n+nd}{@system}\PY{o}{.}\PY{n}{C}\PY{p}{)}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{,} \PY{n}{frmt} \PY{o}{=} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+si}{\PYZob{}:2.2f\PYZcb{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{arraytype} \PY{o}{=} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{bmatrix}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{print\PYZus{}out}\PY{o}{=}\PY{k+kc}{False}\PY{p}{)}\PY{p}{)}
+        
+        \PY{n}{new\PYZus{}A} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{block}\PY{p}{(}\PY{p}{[}\PY{p}{[}\PY{n}{A}\PY{p}{,} \PY{n}{B} \PY{o}{@} \PY{n}{K}\PY{p}{]}\PY{p}{,}\PY{p}{[}\PY{o}{\PYZhy{}}\PY{n}{L}\PY{n+nd}{@C}\PY{p}{,} \PY{n}{A}\PY{o}{+}\PY{n}{B}\PY{n+nd}{@K}\PY{o}{+}\PY{n}{L}\PY{n+nd}{@C}\PY{p}{]}\PY{p}{]}\PY{p}{)}
+        \PY{n}{new\PYZus{}C} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{block}\PY{p}{(}\PY{p}{[}
+            \PY{p}{[}\PY{n}{C}\PY{p}{,} \PY{n}{np}\PY{o}{.}\PY{n}{zeros\PYZus{}like}\PY{p}{(}\PY{n}{C}\PY{p}{)}\PY{p}{]}\PY{p}{,}
+            \PY{p}{[}\PY{n}{np}\PY{o}{.}\PY{n}{zeros\PYZus{}like}\PY{p}{(}\PY{n}{C}\PY{p}{)}\PY{p}{,} \PY{n}{C}\PY{p}{]}
+        \PY{p}{]}\PY{p}{)}
+        \PY{n}{x0} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{p}{[}
+            \PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{,}
+            \PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{,}
+            \PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{,}
+            \PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}
+        \PY{p}{]}\PY{p}{)}
+        \PY{n}{xh0} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{p}{[}
+            \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{,}
+            \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{,}
+            \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{,}
+            \PY{p}{[}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{]}
+        \PY{p}{]}\PY{p}{)}
+        \PY{n}{ss} \PY{o}{=} \PY{n}{control}\PY{o}{.}\PY{n}{ss}\PY{p}{(}\PY{n}{new\PYZus{}A}\PY{p}{,} \PY{n}{np}\PY{o}{.}\PY{n}{zeros}\PY{p}{(}\PY{p}{(}\PY{n}{new\PYZus{}A}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{)}\PY{p}{)}\PY{p}{,} \PY{n}{new\PYZus{}C}\PY{p}{,} \PY{n}{np}\PY{o}{.}\PY{n}{zeros}\PY{p}{(}\PY{p}{(}\PY{n}{new\PYZus{}C}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{)}\PY{p}{)}\PY{p}{)}
+        \PY{n}{resp} \PY{o}{=} \PY{n}{control}\PY{o}{.}\PY{n}{forced\PYZus{}response}\PY{p}{(}\PY{n}{ss}\PY{p}{,} \PY{n}{X0}\PY{o}{=}\PY{n}{np}\PY{o}{.}\PY{n}{concatenate}\PY{p}{(}\PY{p}{(}\PY{n}{x0}\PY{p}{,} \PY{n}{xh0}\PY{p}{)}\PY{p}{,} \PY{n}{axis}\PY{o}{=}\PY{l+m+mi}{0}\PY{p}{)}\PY{p}{,} \PY{n}{T}\PY{o}{=}\PY{n}{time}\PY{p}{)}
+        \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n}{system}\PY{o}{.}\PY{n}{A}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{)}\PY{p}{:}
+            \PY{n}{idx} \PY{o}{=} \PY{p}{(}\PY{n}{i} \PY{o}{/}\PY{o}{/} \PY{l+m+mi}{2}\PY{p}{,} \PY{n}{i} \PY{o}{\PYZpc{}} \PY{l+m+mi}{2}\PY{p}{)}
+            \PY{k}{if} \PY{n}{i} \PY{o}{==} \PY{l+m+mi}{0}\PY{p}{:}
+                \PY{n}{linestyle} \PY{o}{=} \PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZhy{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZhy{}\PYZhy{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZhy{}.}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+            \PY{k}{else}\PY{p}{:}
+                \PY{n}{linestyle} \PY{o}{=} \PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZhy{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZhy{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZhy{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+           
+            \PY{n}{axs}\PY{p}{[}\PY{n}{idx}\PY{p}{]}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{time}\PY{p}{,} \PY{n}{resp}\PY{o}{.}\PY{n}{states}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{p}{,} \PY{n}{linewidth}\PY{o}{=}\PY{l+m+mi}{2}\PY{p}{,} \PY{n}{label}\PY{o}{=}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{system alpha = }\PY{l+s+si}{\PYZob{}}\PY{n}{alpha}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{color}\PY{o}{=}\PY{n}{colors\PYZus{}system}\PY{p}{[}\PY{o}{\PYZhy{}}\PY{n}{j}\PY{p}{]}\PY{p}{,} \PY{n}{linestyle}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZhy{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+            \PY{n}{axs}\PY{p}{[}\PY{n}{idx}\PY{p}{]}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{time}\PY{p}{,} \PY{n}{resp}\PY{o}{.}\PY{n}{states}\PY{p}{[}\PY{l+m+mi}{4}\PY{o}{+}\PY{n}{i}\PY{p}{]}\PY{p}{,} \PY{n}{linewidth}\PY{o}{=}\PY{l+m+mi}{2}\PY{p}{,} \PY{n}{label}\PY{o}{=}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{observer alpha = }\PY{l+s+si}{\PYZob{}}\PY{n}{alpha}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{color}\PY{o}{=}\PY{n}{colors\PYZus{}observer}\PY{p}{[}\PY{o}{\PYZhy{}}\PY{n}{j}\PY{p}{]}\PY{p}{,} \PY{n}{linestyle}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZhy{}\PYZhy{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+            \PY{n}{axs}\PY{p}{[}\PY{n}{idx}\PY{p}{]}\PY{o}{.}\PY{n}{set\PYZus{}title}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{x\PYZus{}}\PY{l+s+si}{\PYZob{}}\PY{n}{i}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s1}{(t)}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{fontsize}\PY{o}{=}\PY{l+m+mi}{12}\PY{p}{)}
+            \PY{n}{axs}\PY{p}{[}\PY{n}{idx}\PY{p}{]}\PY{o}{.}\PY{n}{set\PYZus{}xlabel}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{t, [c]}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{fontsize}\PY{o}{=}\PY{l+m+mi}{12}\PY{p}{)}
+            \PY{n}{axs}\PY{p}{[}\PY{n}{idx}\PY{p}{]}\PY{o}{.}\PY{n}{grid}\PY{p}{(}\PY{k+kc}{True}\PY{p}{)}
+            \PY{n}{axs}\PY{p}{[}\PY{n}{idx}\PY{p}{]}\PY{o}{.}\PY{n}{legend}\PY{p}{(}\PY{p}{)}
+
+        \PY{c+c1}{\PYZsh{} linestyle = [\PYZsq{}\PYZhy{}\PYZsq{}, \PYZsq{}\PYZhy{}\PYZhy{}\PYZsq{}, \PYZsq{}\PYZhy{}.\PYZsq{}]}
+            
+            \PY{n}{ss\PYZus{}e} \PY{o}{=} \PY{n}{control}\PY{o}{.}\PY{n}{ss}\PY{p}{(}\PY{n}{system}\PY{o}{.}\PY{n}{A}\PY{o}{+}\PY{n}{L}\PY{n+nd}{@system}\PY{o}{.}\PY{n}{C}\PY{p}{,} \PY{o}{\PYZhy{}}\PY{n}{L}\PY{o}{*}\PY{l+m+mi}{0}\PY{p}{,} \PY{n}{system}\PY{o}{.}\PY{n}{C}\PY{p}{,} \PY{n}{np}\PY{o}{.}\PY{n}{zeros}\PY{p}{(}\PY{p}{(}\PY{n}{system}\PY{o}{.}\PY{n}{C}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{,} \PY{n}{L}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{)}\PY{p}{)}\PY{p}{)}
+            \PY{n}{output\PYZus{}e} \PY{o}{=} \PY{n}{control}\PY{o}{.}\PY{n}{forced\PYZus{}response}\PY{p}{(}\PY{n}{ss\PYZus{}e}\PY{p}{,} \PY{n}{X0}\PY{o}{=}\PY{p}{[}\PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{]}\PY{p}{,} \PY{n}{T}\PY{o}{=}\PY{n}{time}\PY{p}{)}\PY{o}{.}\PY{n}{states}
+            \PY{n}{axs\PYZus{}e}\PY{p}{[}\PY{n}{idx}\PY{p}{]}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{time}\PY{p}{,} \PY{n}{output\PYZus{}e}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{p}{,} \PY{n}{linewidth}\PY{o}{=}\PY{l+m+mi}{2}\PY{p}{,} \PY{n}{label}\PY{o}{=}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{alpha = }\PY{l+s+si}{\PYZob{}}\PY{n}{alpha}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{color}\PY{o}{=}\PY{n}{colors\PYZus{}system}\PY{p}{[}\PY{o}{\PYZhy{}}\PY{n}{j}\PY{p}{]}\PY{p}{,} \PY{n}{linestyle}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZhy{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+            \PY{n}{axs\PYZus{}e}\PY{p}{[}\PY{n}{idx}\PY{p}{]}\PY{o}{.}\PY{n}{set\PYZus{}title}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{e\PYZus{}}\PY{l+s+si}{\PYZob{}}\PY{n}{i}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s1}{(t)}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{fontsize}\PY{o}{=}\PY{l+m+mi}{12}\PY{p}{)}
+            \PY{n}{axs\PYZus{}e}\PY{p}{[}\PY{n}{idx}\PY{p}{]}\PY{o}{.}\PY{n}{set\PYZus{}xlabel}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{t, [c]}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{fontsize}\PY{o}{=}\PY{l+m+mi}{12}\PY{p}{)}
+            \PY{n}{axs\PYZus{}e}\PY{p}{[}\PY{n}{idx}\PY{p}{]}\PY{o}{.}\PY{n}{grid}\PY{p}{(}\PY{k+kc}{True}\PY{p}{)}
+            \PY{n}{axs\PYZus{}e}\PY{p}{[}\PY{n}{idx}\PY{p}{]}\PY{o}{.}\PY{n}{legend}\PY{p}{(}\PY{p}{)}
+
+
+        \PY{k}{for} \PY{n}{idx} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{)}\PY{p}{:}
+            \PY{n}{axs\PYZus{}y}\PY{p}{[}\PY{n}{idx}\PY{p}{]}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{time}\PY{p}{,} \PY{p}{(}\PY{n}{C}\PY{n+nd}{@resp}\PY{o}{.}\PY{n}{states}\PY{p}{[}\PY{p}{:}\PY{l+m+mi}{4}\PY{p}{]}\PY{p}{)}\PY{p}{[}\PY{n}{idx}\PY{p}{]}\PY{p}{,} \PY{n}{linewidth}\PY{o}{=}\PY{l+m+mi}{2}\PY{p}{,} \PY{n}{label}\PY{o}{=}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{system alpha = }\PY{l+s+si}{\PYZob{}}\PY{n}{alpha}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{color}\PY{o}{=}\PY{n}{colors\PYZus{}system}\PY{p}{[}\PY{o}{\PYZhy{}}\PY{n}{j}\PY{p}{]}\PY{p}{,} \PY{n}{linestyle}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZhy{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+            \PY{n}{axs\PYZus{}y}\PY{p}{[}\PY{n}{idx}\PY{p}{]}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{time}\PY{p}{,} \PY{p}{(}\PY{n}{C}\PY{n+nd}{@resp}\PY{o}{.}\PY{n}{states}\PY{p}{[}\PY{l+m+mi}{4}\PY{p}{:}\PY{p}{]}\PY{p}{)}\PY{p}{[}\PY{n}{idx}\PY{p}{]}\PY{p}{,} \PY{n}{linewidth}\PY{o}{=}\PY{l+m+mi}{2}\PY{p}{,} \PY{n}{label}\PY{o}{=}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{observe alpha = }\PY{l+s+si}{\PYZob{}}\PY{n}{alpha}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{color}\PY{o}{=}\PY{n}{colors\PYZus{}observer}\PY{p}{[}\PY{o}{\PYZhy{}}\PY{n}{j}\PY{p}{]}\PY{p}{,} \PY{n}{linestyle}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZhy{}\PYZhy{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+            \PY{n}{axs\PYZus{}y}\PY{p}{[}\PY{n}{idx}\PY{p}{]}\PY{o}{.}\PY{n}{set\PYZus{}title}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{y\PYZus{}}\PY{l+s+si}{\PYZob{}}\PY{n}{idx}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s1}{(t)}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{fontsize}\PY{o}{=}\PY{l+m+mi}{12}\PY{p}{)}
+            \PY{n}{axs\PYZus{}y}\PY{p}{[}\PY{n}{idx}\PY{p}{]}\PY{o}{.}\PY{n}{set\PYZus{}xlabel}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{t, [c]}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{fontsize}\PY{o}{=}\PY{l+m+mi}{12}\PY{p}{)}
+            \PY{n}{axs\PYZus{}y}\PY{p}{[}\PY{n}{idx}\PY{p}{]}\PY{o}{.}\PY{n}{grid}\PY{p}{(}\PY{k+kc}{True}\PY{p}{)}
+            \PY{n}{axs\PYZus{}y}\PY{p}{[}\PY{n}{idx}\PY{p}{]}\PY{o}{.}\PY{n}{legend}\PY{p}{(}\PY{p}{)}
+            \PY{c+c1}{\PYZsh{} ss\PYZus{}e = control.ss(system.A+L@system.C, \PYZhy{}L*0, system.C, np.zeros((system.C.shape[0], L.shape[1])))}
+            \PY{c+c1}{\PYZsh{} output\PYZus{}e = control.forced\PYZus{}response(ss\PYZus{}e, X0=[2, 2, 2, 2], T=time).states}
+        \PY{n}{axs\PYZus{}u}\PY{o}{.}\PY{n}{plot}\PY{p}{(}\PY{n}{time}\PY{p}{,} \PY{p}{(}\PY{n}{K}\PY{n+nd}{@resp}\PY{o}{.}\PY{n}{states}\PY{p}{[}\PY{l+m+mi}{4}\PY{p}{:}\PY{p}{]}\PY{p}{)}\PY{o}{.}\PY{n}{reshape}\PY{p}{(}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{)}\PY{p}{,} \PY{n}{linewidth}\PY{o}{=}\PY{l+m+mi}{2}\PY{p}{,} \PY{n}{label}\PY{o}{=}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{alpha = }\PY{l+s+si}{\PYZob{}}\PY{n}{alpha}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{color}\PY{o}{=}\PY{n}{colors\PYZus{}observer}\PY{p}{[}\PY{o}{\PYZhy{}}\PY{n}{j}\PY{p}{]}\PY{p}{,} \PY{n}{linestyle}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZhy{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+        \PY{n}{axs\PYZus{}u}\PY{o}{.}\PY{n}{set\PYZus{}title}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{u(t)}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{fontsize}\PY{o}{=}\PY{l+m+mi}{12}\PY{p}{)}
+        \PY{n}{axs\PYZus{}u}\PY{o}{.}\PY{n}{set\PYZus{}xlabel}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{t, [c]}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{fontsize}\PY{o}{=}\PY{l+m+mi}{12}\PY{p}{)}
+        \PY{n}{axs\PYZus{}u}\PY{o}{.}\PY{n}{grid}\PY{p}{(}\PY{k+kc}{True}\PY{p}{)}
+        \PY{n}{axs\PYZus{}u}\PY{o}{.}\PY{n}{legend}\PY{p}{(}\PY{p}{)}
+            
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{99}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{task\PYZus{}4}\PY{p}{(}\PY{n}{system}\PY{p}{,} \PY{p}{[}\PY{l+m+mf}{1.0}\PY{p}{,} \PY{l+m+mf}{4.0}\PY{p}{]}\PY{p}{,} \PY{n}{time\PYZus{}end}\PY{o}{=}\PY{l+m+mf}{3.5}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Result:  0.0
+Time:  0.0
+==============1.0==============
+K:
+[[ 19.89583301 -79.25318811  58.01295308  -7.1988194 ]]
+K latex:
+\textbackslash{}begin\{bmatrix\}
+  19.90 \& -79.25 \&  58.01 \& -7.20
+\textbackslash{}end\{bmatrix\}
+L:
+[[-13.22068176   0.68766774]
+ [-28.41101927  -0.68736573]
+ [ 28.41101921  -0.68736569]
+ [-13.22068042  -0.68766776]]
+L latex:
+\textbackslash{}begin\{bmatrix\}
+ -13.22 \&  0.69\textbackslash{}\textbackslash{}
+ -28.41 \& -0.69\textbackslash{}\textbackslash{}
+  28.41 \& -0.69\textbackslash{}\textbackslash{}
+ -13.22 \& -0.69
+\textbackslash{}end\{bmatrix\}
+=============================
+A + BK eigvalues:
+[-3.34469913+55.5982572j -3.34469913-55.5982572j -2.1229634  +1.3609079j
+ -2.1229634  -1.3609079j]
+A + BK eigvalues latex:
+\textbackslash{}begin\{bmatrix\}
+ -3.34 + 55.60j \& -3.34 + -55.60j \& -2.12 + 1.36j \& -2.12 + -1.36j
+\textbackslash{}end\{bmatrix\}
+A + LC eigvalues:
+[ -1.25102402+12.54846465j  -1.25102402-12.54846465j
+ -12.         +0.j          -1.50013383 +0.j        ]
+A + LC eigvalues latex:
+\textbackslash{}begin\{bmatrix\}
+ -1.25 + 12.55j \& -1.25 + -12.55j \& -12.00 + 0.00j \& -1.50 + 0.00j
+\textbackslash{}end\{bmatrix\}
+Result:  0.0
+Time:  0.0
+==============4.0==============
+K:
+[[ 17.09569843 -52.67280523  31.86787102  -4.91536096]]
+K latex:
+\textbackslash{}begin\{bmatrix\}
+  17.10 \& -52.67 \&  31.87 \& -4.92
+\textbackslash{}end\{bmatrix\}
+L:
+[[-19.35152442   1.06263868]
+ [-43.80383075  -1.06243169]
+ [ 43.80388343  -1.0624299 ]
+ [-19.35149158  -1.06263938]]
+L latex:
+\textbackslash{}begin\{bmatrix\}
+ -19.35 \&  1.06\textbackslash{}\textbackslash{}
+ -43.80 \& -1.06\textbackslash{}\textbackslash{}
+  43.80 \& -1.06\textbackslash{}\textbackslash{}
+ -19.35 \& -1.06
+\textbackslash{}end\{bmatrix\}
+=============================
+A + BK eigvalues:
+[-6.27732823+29.30534635j -6.27732823-29.30534635j
+ -5.27885543 +5.24926161j -5.27885543 -5.24926161j]
+A + BK eigvalues latex:
+\textbackslash{}begin\{bmatrix\}
+ -6.28 + 29.31j \& -6.28 + -29.31j \& -5.28 + 5.25j \& -5.28 + -5.25j
+\textbackslash{}end\{bmatrix\}
+A + LC eigvalues:
+[ -4.25066691+15.52928671j  -4.25066691-15.52928671j
+ -12.         +0.j          -4.5002793  +0.j        ]
+A + LC eigvalues latex:
+\textbackslash{}begin\{bmatrix\}
+ -4.25 + 15.53j \& -4.25 + -15.53j \& -12.00 + 0.00j \& -4.50 + 0.00j
+\textbackslash{}end\{bmatrix\}
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{lab9_files/lab9_16_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{lab9_files/lab9_16_2.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{lab9_files/lab9_16_3.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{lab9_files/lab9_16_4.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+
+    % Add a bibliography block to the postdoc
+    
+    
+    
+\end{document}
